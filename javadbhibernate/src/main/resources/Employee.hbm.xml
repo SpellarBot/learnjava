@@ -1,0 +1,39 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name = "com.rightkarma.hibernate.model.Employee" table = "EMPLOYEE">
+
+        <meta attribute = "class-description">
+            This class contains the employee detail.
+        </meta>
+
+        <id name = "employeeId" column = "EMPLOYEE_ID" type = "int" />
+        <property name = "name" column = "NAME" type = "java.lang.String"/>
+        <property name = "emailId" column = "EMAIL_ID" type = "java.lang.String"/>
+        <component name="hiringData">
+            <property name = "hireDate" column = "HIRE_DATE" type = "java.util.Date"/>
+            <property name = "hiringManagerId" column = "HIRING_MANAGER_ID" type = "int"/>
+        </component>
+
+        <idbag name="employeeHistory" table="EMPLOYEE_HISTORY">
+            <collection-id column="HISTORY_ID" type="int">
+                <generator class="increment"></generator>
+            </collection-id>
+            <key column="EMPLOYEE_ID"></key>
+            <composite-element class="com.rightkarma.hibernate.model.EmployeeHistory">
+                <property name="entryDate" type="java.util.Date" column="ENTRY_DATE"/>
+                <property name="entry" type="java.lang.String" column="ENTRY"/>
+            </composite-element>
+        </idbag>
+
+        <!--inverse true - so that hibernate does not update tables twice when updating EMPLOYEE_PROJECT-->
+        <list name="employeeProjects" table="EMPLOYEE_PROJECT" inverse="true" cascade="save-update">
+            <key column="EMPLOYEE_ID"></key>
+            <list-index column="START_DATE"></list-index>
+            <one-to-many class="com.rightkarma.hibernate.model.EmployeeProject"/>
+        </list>
+    </class>
+</hibernate-mapping>

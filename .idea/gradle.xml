@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="LOCAL" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="C:/UserProgramFiles/gradle-4.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/javabasic" />
+            <option value="$PROJECT_DIR$/javadb" />
+            <option value="$PROJECT_DIR$/javadbhibernate" />
+            <option value="$PROJECT_DIR$/javadbspring" />
+            <option value="$PROJECT_DIR$/javamemory" />
+            <option value="$PROJECT_DIR$/javaspring" />
+          </set>
+        </option>
+        <option name="useAutoImport" value="true" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,10 @@
+rootProject.name = 'learnjava'
+
+include 'javabasic'
+include 'javadb'
+include 'javadbspring'
+include 'javadbhibernate'
+include 'javamemory'
+include 'javaspring'
+
+

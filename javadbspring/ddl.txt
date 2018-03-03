@@ -1,0 +1,22 @@
+create table NEWEMPLOYEES ( 
+id int,
+employee_id int, 
+first_name varchar2(30), 
+last_name varchar2(30), 
+email varchar2(30)
+);
+
+alter table NEWEMPLOYEES add (
+	constraint empkey primary key ( id)
+);
+
+create sequence emp_seq start with 1;
+
+create or replace trigger emp_trg
+before insert on newemployees
+for each row
+begin
+select emp_seq.NEXTVAL
+into :new.id
+from dual;
+end;

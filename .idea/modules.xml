@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/javabasic/javabasic.iml" filepath="$PROJECT_DIR$/javabasic/javabasic.iml" group="javabasic" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javabasic/javabasic_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javabasic/javabasic_main.iml" group="javabasic" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javabasic/javabasic_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javabasic/javabasic_test.iml" group="javabasic" />
+      <module fileurl="file://$PROJECT_DIR$/javadb/javadb.iml" filepath="$PROJECT_DIR$/javadb/javadb.iml" group="javadb" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javadb/javadb_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javadb/javadb_main.iml" group="javadb" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javadb/javadb_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javadb/javadb_test.iml" group="javadb" />
+      <module fileurl="file://$PROJECT_DIR$/javadbhibernate/javadbhibernate.iml" filepath="$PROJECT_DIR$/javadbhibernate/javadbhibernate.iml" group="javadbhibernate" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javadbhibernate/javadbhibernate_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javadbhibernate/javadbhibernate_main.iml" group="javadbhibernate" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javadbhibernate/javadbhibernate_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javadbhibernate/javadbhibernate_test.iml" group="javadbhibernate" />
+      <module fileurl="file://$PROJECT_DIR$/javadbspring/javadbspring.iml" filepath="$PROJECT_DIR$/javadbspring/javadbspring.iml" group="javadbspring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javadbspring/javadbspring_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javadbspring/javadbspring_main.iml" group="javadbspring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javadbspring/javadbspring_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javadbspring/javadbspring_test.iml" group="javadbspring" />
+      <module fileurl="file://$PROJECT_DIR$/javamemory/javamemory.iml" filepath="$PROJECT_DIR$/javamemory/javamemory.iml" group="javamemory" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javamemory/javamemory_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javamemory/javamemory_main.iml" group="javamemory" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javamemory/javamemory_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javamemory/javamemory_test.iml" group="javamemory" />
+      <module fileurl="file://$PROJECT_DIR$/javaspring/javaspring.iml" filepath="$PROJECT_DIR$/javaspring/javaspring.iml" group="javaspring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javaspring/javaspring_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javaspring/javaspring_main.iml" group="javaspring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javaspring/javaspring_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javaspring/javaspring_test.iml" group="javaspring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/learnjava.iml" filepath="$PROJECT_DIR$/.idea/modules/learnjava.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/learnjava_main.iml" filepath="$PROJECT_DIR$/.idea/modules/learnjava_main.iml" group="learnjava" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/learnjava_test.iml" filepath="$PROJECT_DIR$/.idea/modules/learnjava_test.iml" group="learnjava" />
+    </modules>
+  </component>
+</project>
