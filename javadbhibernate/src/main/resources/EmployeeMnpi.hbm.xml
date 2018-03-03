@@ -9,14 +9,24 @@
             This class contains the employee mnpi mappings.
         </meta>
 
+        <!-- alternate mapping if you want MNPI to have its own id.-->
         <id name = "mnpiId" type = "int">
+            <column name="MNPI_ID"></column>
+            <generator class="increment"/>
+        </id>
+
+        <one-to-one name = "employee" class="com.rightkarma.learnjava.hibernate.model.Employee" property-ref="employeeMnpi"/>
+
+
+        <!--<id name = "mnpiId" type = "int">
             <column name="EMPLOYEE_ID"></column>
             <generator class="foreign">
                 <param name="property">employee</param>
             </generator>
         </id>
-        <!--constrained="true" - exactly one row-->
-        <one-to-one name = "employee" class="com.rightkarma.learnjava.hibernate.model.Employee" constrained="true"/>
+        &lt;!&ndash;constrained="true" - exactly one row&ndash;&gt;
+        <one-to-one name = "employee" class="com.rightkarma.learnjava.hibernate.model.Employee" constrained="true"/>-->
+
         <property name = "dob" column = "DOB" type = "java.util.Date"/>
     </class>
 </hibernate-mapping>

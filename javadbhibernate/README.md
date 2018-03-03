@@ -35,3 +35,6 @@ Entity Type:
 |EmployeeHistory|Dependent Entity.No seperate hbm file.|
 |EmployeeProject|Seperate Entity. Separate hbm file. One to Many relationship|
 |EmployeeMnpi|Seperate Entity. Separate hbm file. One to One relationship|
+
+By default hibernate configuration looks for hibernate.cfg.xml in home directory.
+

@@ -5,11 +5,12 @@
 
 <hibernate-mapping>
     <class name = "com.rightkarma.learnjava.hibernate.model.Employee" table = "EMPLOYEE">
-
         <meta attribute = "class-description">
             This class contains the employee detail.
         </meta>
 
+        <cache usage="read-write"/>
+        
         <id name = "employeeId" column = "EMPLOYEE_ID" type = "int" />
         <property name = "name" column = "NAME" type = "java.lang.String"/>
         <property name = "emailId" column = "EMAIL_ID" type = "java.lang.String"/>
@@ -19,10 +20,11 @@
         </component>
 
         <!--add mnpi information which is a separate entity . one to one-->
-        <one-to-one name="employeeMnpi" class="com.rightkarma.learnjava.hibernate.model.EmployeeMnpi" cascade="save-update">
+        <!--<one-to-one name="employeeMnpi" class="com.rightkarma.learnjava.hibernate.model.EmployeeMnpi" cascade="save-update"/>-->
 
-        </one-to-one>
-        
+        <!-- alternate mapping if you want MNPI to have its own id.-->
+        <many-to-one name="employeeMnpi" class="com.rightkarma.learnjava.hibernate.model.EmployeeMnpi" cascade="save-update" unique="true"/>
+
         <!--add history , which is a sub-entity. so no seperate hbm file.-->
         <idbag name="employeeHistory" table="EMPLOYEE_HISTORY">
             <collection-id column="HISTORY_ID" type="int">
@@ -42,4 +44,9 @@
             <one-to-many class="com.rightkarma.learnjava.hibernate.model.EmployeeProject"/>
         </list>
     </class>
+
+    <query name="getEmployees">
+        <![CDATA[from Employee]]>
+
+    </query>
 </hibernate-mapping>
