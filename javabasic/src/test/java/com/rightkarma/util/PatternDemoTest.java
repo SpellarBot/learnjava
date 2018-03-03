@@ -1,6 +1,6 @@
 package com.rightkarma.util;
 
-import com.rightkarma.javapackage.util.PatternDemo;
+import com.rightkarma.learnjava.javapackage.util.PatternDemo;
 import org.junit.Test;
 
 import java.util.ArrayList;

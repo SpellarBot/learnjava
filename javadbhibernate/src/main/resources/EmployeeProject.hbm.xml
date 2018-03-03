@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name = "com.rightkarma.hibernate.model.EmployeeProject" table = "EMPLOYEE_PROJECT">
+    <class name = "com.rightkarma.learnjava.hibernate.model.EmployeeProject" table = "EMPLOYEE_PROJECT">
         <meta attribute = "class-description">
             This class contains the employee project mappings.
         </meta>
@@ -12,7 +12,7 @@
         <id name = "projectId" column = "PROJECT_ID" type = "int">
             <generator class="increment"/>
         </id>
-        <many-to-one name = "employee" class="com.rightkarma.hibernate.model.Employee" fetch="join">
+        <many-to-one name = "employee" class="com.rightkarma.learnjava.hibernate.model.Employee" fetch="join">
             <column name="EMPLOYEE_ID"/>
         </many-to-one>
         <property name = "startDate" column = "START_DATE" type = "java.util.Date"/>

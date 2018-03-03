@@ -6,5 +6,5 @@ include 'javadbspring'
 include 'javadbhibernate'
 include 'javamemory'
 include 'javaspring'
-
+include 'javamodel'
 

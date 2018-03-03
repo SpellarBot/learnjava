@@ -27,3 +27,11 @@ Entity Type:
 * Seperate hibernate file
 * Treated as another entity with one to many relationship
 * EmployeeProject has Employee class , not employeeId
+
+**PROJECT CODE**
+|*Name*|*Type*|
+|Employee|Main class for example. An Entity|
+|HiringData|Composite key. No seperate hbm file.|
+|EmployeeHistory|Dependent Entity.No seperate hbm file.|
+|EmployeeProject|Seperate Entity. Separate hbm file. One to Many relationship|
+|EmployeeMnpi|Seperate Entity. Separate hbm file. One to One relationship|

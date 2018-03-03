@@ -11,9 +11,10 @@
         <property name="hibernate.default_schema">mycode</property>
         <property name="hibernate.dialect">org.hibernate.dialect.DB2Dialect</property>
         <property name="hibernate.show_sql">true</property>
-        <!--<property name="hibernate.hbm2ddl.auto">create</property> this will auto create DB if missing-->
+        <property name="hibernate.hbm2ddl.auto">create</property> <!--this will auto create DB if missing-->
         <mapping resource="Employee.hbm.xml"></mapping>
         <mapping resource="EmployeeProject.hbm.xml"></mapping>
+        <mapping resource="EmployeeMnpi.hbm.xml"></mapping>
     </session-factory>
 
     <!-- used this for oracle

@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name = "com.rightkarma.hibernate.model.Employee" table = "EMPLOYEE">
+    <class name = "com.rightkarma.learnjava.hibernate.model.Employee" table = "EMPLOYEE">
 
         <meta attribute = "class-description">
             This class contains the employee detail.
@@ -18,12 +18,18 @@
             <property name = "hiringManagerId" column = "HIRING_MANAGER_ID" type = "int"/>
         </component>
 
+        <!--add mnpi information which is a separate entity . one to one-->
+        <one-to-one name="employeeMnpi" class="com.rightkarma.learnjava.hibernate.model.EmployeeMnpi" cascade="save-update">
+
+        </one-to-one>
+        
+        <!--add history , which is a sub-entity. so no seperate hbm file.-->
         <idbag name="employeeHistory" table="EMPLOYEE_HISTORY">
             <collection-id column="HISTORY_ID" type="int">
                 <generator class="increment"></generator>
             </collection-id>
             <key column="EMPLOYEE_ID"></key>
-            <composite-element class="com.rightkarma.hibernate.model.EmployeeHistory">
+            <composite-element class="com.rightkarma.learnjava.hibernate.model.EmployeeHistory">
                 <property name="entryDate" type="java.util.Date" column="ENTRY_DATE"/>
                 <property name="entry" type="java.lang.String" column="ENTRY"/>
             </composite-element>
@@ -33,7 +39,7 @@
         <list name="employeeProjects" table="EMPLOYEE_PROJECT" inverse="true" cascade="save-update">
             <key column="EMPLOYEE_ID"></key>
             <list-index column="START_DATE"></list-index>
-            <one-to-many class="com.rightkarma.hibernate.model.EmployeeProject"/>
+            <one-to-many class="com.rightkarma.learnjava.hibernate.model.EmployeeProject"/>
         </list>
     </class>
 </hibernate-mapping>
