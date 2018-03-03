@@ -8,7 +8,7 @@ public class EmployeeProject {
     private Date startDate;
     private Date endDate;
 
-    public EmployeeProject(int i, Date startDate, Date endDate) {
+    public EmployeeProject(int projectId, Date startDate, Date endDate) {
         this.projectId = projectId;
         this.startDate = startDate;
         this.endDate = endDate;
