@@ -7,4 +7,5 @@ include 'javadbhibernate'
 include 'javamemory'
 include 'javaspring'
 include 'javamodel'
+include 'javasnippets'
 

@@ -1,7 +1,8 @@
 package com.rightkarma.learnjava.javabasic.generics.bounds;
 
-import com.rightkarma.learnjava.javabasic.generics.common.Person;
-import com.rightkarma.learnjava.javabasic.generics.common.YoungPerson;
+import com.rightkarma.learnjava.generics.bounds.LowerUpperBoundGeneric;
+import com.rightkarma.learnjava.generics.common.Person;
+import com.rightkarma.learnjava.generics.common.YoungPerson;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

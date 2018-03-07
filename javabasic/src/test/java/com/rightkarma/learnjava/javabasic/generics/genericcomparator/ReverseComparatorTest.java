@@ -1,6 +1,8 @@
 package com.rightkarma.learnjava.javabasic.generics.genericcomparator;
 
-import com.rightkarma.learnjava.javabasic.generics.common.Person;
+import com.rightkarma.learnjava.generics.common.Person;
+import com.rightkarma.learnjava.generics.genericcomparator.AgeComparator;
+import com.rightkarma.learnjava.generics.genericcomparator.ReverseComparator;
 import org.junit.Before;
 import org.junit.Test;
 

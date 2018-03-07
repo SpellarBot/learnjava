@@ -1,8 +1,8 @@
 package com.rightkarma.learnjava.javabasic.generics.reflection;
 
-import com.rightkarma.learnjava.javabasic.generics.reflection.intersection.Consultant;
-import com.rightkarma.learnjava.javabasic.generics.reflection.intersection.Employee;
-import com.rightkarma.learnjava.javabasic.generics.reflection.intersection.GenericsIntersection;
+import com.rightkarma.learnjava.generics.reflection.intersection.Consultant;
+import com.rightkarma.learnjava.generics.reflection.intersection.Employee;
+import com.rightkarma.learnjava.generics.reflection.intersection.GenericsIntersection;
 import org.junit.Test;
 
 public class GenericsIntersectionTest {

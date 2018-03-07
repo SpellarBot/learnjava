@@ -1,5 +1,6 @@
 package com.rightkarma.learnjava.javabasic.generics.bounds;
 
+import com.rightkarma.learnjava.generics.bounds.SortedPair;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

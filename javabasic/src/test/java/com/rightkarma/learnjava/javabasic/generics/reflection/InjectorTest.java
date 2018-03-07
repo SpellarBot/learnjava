@@ -1,5 +1,7 @@
 package com.rightkarma.learnjava.javabasic.generics.reflection;
 
+import com.rightkarma.learnjava.generics.reflection.Injector;
+import com.rightkarma.learnjava.generics.reflection.Logger;
 import org.junit.Test;
 
 public class InjectorTest {

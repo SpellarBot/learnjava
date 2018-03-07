@@ -14,6 +14,8 @@
       <module name="javamemory_test" target="1.8" />
       <module name="javamodel_main" target="1.8" />
       <module name="javamodel_test" target="1.8" />
+      <module name="javasnippets_main" target="1.8" />
+      <module name="javasnippets_test" target="1.8" />
       <module name="javaspring_main" target="1.8" />
       <module name="javaspring_test" target="1.8" />
       <module name="learnjava_main" target="1.8" />

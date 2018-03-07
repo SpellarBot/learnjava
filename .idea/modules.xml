@@ -20,6 +20,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/javamodel.iml" filepath="$PROJECT_DIR$/.idea/modules/javamodel.iml" group="javamodel" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/javamodel/javamodel_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javamodel/javamodel_main.iml" group="javamodel" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/javamodel/javamodel_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javamodel/javamodel_test.iml" group="javamodel" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javasnippets.iml" filepath="$PROJECT_DIR$/.idea/modules/javasnippets.iml" group="javasnippets" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javasnippets/javasnippets_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javasnippets/javasnippets_main.iml" group="javasnippets" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/javasnippets/javasnippets_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javasnippets/javasnippets_test.iml" group="javasnippets" />
       <module fileurl="file://$PROJECT_DIR$/javaspring/javaspring.iml" filepath="$PROJECT_DIR$/javaspring/javaspring.iml" group="javaspring" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/javaspring/javaspring_main.iml" filepath="$PROJECT_DIR$/.idea/modules/javaspring/javaspring_main.iml" group="javaspring" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/javaspring/javaspring_test.iml" filepath="$PROJECT_DIR$/.idea/modules/javaspring/javaspring_test.iml" group="javaspring" />
