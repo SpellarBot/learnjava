@@ -1,7 +1,7 @@
 /**
  * LearningNote
- * You can call a static method using an object and java would work fine
- * If you have tried to override the method, it won't work.
+ * You can call a static method using an object and java would manage fine
+ * If you have tried to override the method, it won't manage.
  * method called would depend upon Class Type not object type.
  *
 
@@ -32,3 +32,4 @@ OUTPUT
 
 
  */
+// LearningNote - static methods are called as per reference type. non-static methods are based upon actual object type.

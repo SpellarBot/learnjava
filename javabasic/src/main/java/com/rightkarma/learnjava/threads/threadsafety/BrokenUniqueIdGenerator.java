@@ -6,6 +6,13 @@ package com.rightkarma.learnjava.threads.threadsafety;
  * This class is NOT thread-safe.
  * </p>
  */
+
+/**
+ * LearningNote
+ * Experiment - create a regular class to give counters.
+ * Don't synchronize the generator method.
+ * When called by multiple threads in parallel, the class would work erratically and generate duplicate counters.
+  */
 public class BrokenUniqueIdGenerator {
     private long counter = 0;
  

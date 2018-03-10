@@ -1,6 +1,6 @@
 package com.rightkarma.learnjava.jvm.gc;
 
-/*
+/*// LearningNote -
  * running this program by giving -Djava.security.manager
  * you can see that file access will be restricted.
  * 

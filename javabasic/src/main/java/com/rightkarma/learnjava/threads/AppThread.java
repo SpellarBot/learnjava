@@ -2,56 +2,58 @@ package com.rightkarma.learnjava.threads;
 
 public class AppThread extends Thread {
 
-	private final static String prmain="....................................MAIN : ";
-	private final static String prother="..........OTHER : ";
-	
-	@Override
-	public void run() {
-		String pr;
-		String name = Thread.currentThread().getName();
-		if ( name.equals("main")) {
-			pr=prmain;
-		}else {
-			pr=prother;
-		} 
-		System.out.println(pr+"running");
-		int i = 2;
-		while (i > 0) {
-			
-			System.out.println(pr + i);
-			i--;
-			try {
-				sleep(1000);
-			} catch (InterruptedException e) {
-				System.out.println(pr+"THREAD EXCEPTION. Thread:" + name+" i : "+i);
-				System.out.println(pr+e.getMessage());
-			}
-		}
-	}
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " running");
+        int i = 5;
+        while (i > 0) {
+            System.out.println(Thread.currentThread().getName() + " "+i--);
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println(Thread.currentThread().getName() + " InterruptedException: " + e.getMessage());
+            }
+        }
+    }
 
-	public static void main(String[] args) {
-		AppThread t = new AppThread();
-		t.start();// this will start a new thread.
-		t.interrupt();
-		t.run(); // this will run code on main thread.
-		t.run();// second call will wait for first main thread exec to finish
-	}
+    /**
+     * LearningNote
+     * Start a thread from main using start().
+     * start() will run a seperate thread.
+     * run() will run code on main thread even if you create a seperate thread object.
+     * In Below code 2 threads should be running.
+     * main - by default. It will first run psvm code, and then code assinged to thread t because of t.run()
+     * Thread-0 - due to t.start()
+     *
+     *
+     */
+    public static void main(String[] args) {
+        System.out.println(Thread.currentThread().getName() + " main method running");
+        AppThread t = new AppThread();
+        t.start();// this will start a new thread.
+        t.interrupt();
+        t.run();
+        t.interrupt();
+    }
 }
 
 
 /*
  * OUTPUT
-....................................MAIN : running
-..........OTHER : running
-..........OTHER : 2
-....................................MAIN : 2
-..........OTHER : THREAD EXCEPTION. Thread:Thread-0 i : 1
-..........OTHER : sleep interrupted
-..........OTHER : 1
-....................................MAIN : 1
-....................................MAIN : running
-....................................MAIN : 2
-....................................MAIN : 1
+main main method running
+main running
+main 5
+Thread-0 running
+Thread-0 5
+Thread-0 InterruptedException: sleep interrupted
+Thread-0 4
+Thread-0 3
+main 4
+main 3
+Thread-0 2
+main 2
+Thread-0 1
+main 1
 
  * 
  */

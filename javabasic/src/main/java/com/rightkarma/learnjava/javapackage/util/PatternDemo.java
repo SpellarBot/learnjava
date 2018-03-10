@@ -1,21 +1,21 @@
 package com.rightkarma.learnjava.javapackage.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// LearningNote - use of Pattern and Matcher class
 public class PatternDemo {
 
-	public List<String> findPattern(String str) {
-		List<String> list = new ArrayList<>();
-		Pattern p = Pattern.compile("is|a|the");
-		Matcher m = p.matcher(str);
-		
-		while ( m.find()) {
-			String strFound = m.group();
-			list.add(strFound);
-		}
-		return list;
-	}
+
+    public static void main(String[] args) {
+        String patterString = "is|a|the";
+        Pattern p = Pattern.compile("is|a|the");
+
+        String inputString = "This is a sample line. Parse it at your own risk !!";
+        Matcher m = p.matcher(inputString);
+        while (m.find()) {
+            String strFound = m.group();
+            System.out.println(String.format("strFound: %s %n",strFound));
+        }
+    }
 }

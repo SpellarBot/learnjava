@@ -1,51 +1,65 @@
 package com.rightkarma.learnjava.jvm.gc;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 
+/**
+ * LearningNote
+ * Experiment. put a key-value in a WeakHashMap and a HashMap.
+ * Now point key to null.
+ * See if the value is removed from the map ?
+ */
 public class WeakHashMapExample {
-	public static void main(String[] args) {
-		WeakHashMap<Animal, AnimalMetaData> weakHashMap = new WeakHashMap<Animal, AnimalMetaData>();
-		Animal kevin = new Animal(); // strong reference
-		weakHashMap.put(kevin, new AnimalMetaData());
+    public static void main(String[] args) {
+        HashMap<Long, Animal> hashMap = new HashMap<>();
+        WeakHashMap<Long, Animal> weakHashMap = new WeakHashMap<>();
 
-		AnimalMetaData p = weakHashMap.get(kevin); // at this point, this should return the value
-		System.out.println(p); // prints the meta data
-		kevin = null; // now we need to prove that this is gone from weakHashMap becuase strong reference is gone
-		
-		System.gc();
+        Animal animal1 = new Animal(); // strong reference
+        Animal animal2 = new Animal(); // strong reference
+        hashMap.put(animal1.getId(),animal1 );
+        weakHashMap.put(animal2.getId(), animal2);
 
-		// sleep to ensure that GC has run
-		try {
-			Thread.sleep(1000); 
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		// expect that key gone is printed.
-		// this is because we had cleared the strong reference 
-		// key value is expected to be gone from WeakHashMap because of that 
-		if (weakHashMap.containsValue(p)) {
-			System.out.println("still contains key");
-		} else {
-			System.out.println("key gone");
-		}
-	}
+
+        System.out.println("--------nullify the keys---------");
+        animal1.setId(null);
+        animal2.setId(null);
+        System.out.println("--------check the maps---------");
+        System.out.println("hashMap:"+hashMap.containsValue(animal1));
+        System.out.println("weakHashMap:"+weakHashMap.containsValue(animal2));
+        System.out.println("--------sun sysmte.gc and check the maps---------");
+        System.gc();// sleep to ensure that GC has run
+        try { Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+        System.out.println("hashMap:"+hashMap.containsValue(animal1));
+        System.out.println("weakHashMap:"+weakHashMap.containsValue(animal2));
+        System.out.println("--------print the objects---------");
+        System.out.println(animal1);
+        System.out.println(animal2);
+    }
 }
 
 final class Animal {
+    Long id = Long.valueOf(new Date().hashCode());
+    Date date = new Date();
+    public long getId() { return id;}
+    public void setId(Long id) {  this.id = id; }
+    public String toString() {return "Animal{" +"id=" + id +", date=" + date +'}';
+    }
 }
+/*
+LearningNote - A WeakHashMap removes the entry if key is nullified.
 
-class AnimalMetaData {
-	Date date;
+OUTPUT
 
-	AnimalMetaData() {
-		date = new Date();
-	}
+--------nullify the keys---------
+--------check the maps---------
+hashMap:true
+weakHashMap:true
+--------sun sysmte.gc and check the maps---------
+hashMap:true
+weakHashMap:false
+--------print the objects---------
+Animal{id=null, date=Sat Mar 10 17:56:46 IST 2018}
+Animal{id=null, date=Sat Mar 10 17:56:46 IST 2018}
 
-	@Override
-	public String toString() {
-		return "AnimalMetaData [date=" + date + "]";
-	}
-
-}
+*/
