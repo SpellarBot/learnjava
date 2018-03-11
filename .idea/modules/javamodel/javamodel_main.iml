@@ -30,15 +30,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../extlib/jmh-generator-annprocess-1.10.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../extlib/ojdbc6.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -49,6 +40,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../extlib/db2jcc4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../extlib/jmh-generator-annprocess-1.10.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
