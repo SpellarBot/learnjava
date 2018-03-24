@@ -1,4 +1,4 @@
-package com.rightkarma.learnjava.jaxb;
+package com.rightkarma.learnjava.jaxb.basic;
 
 public class Employee{
     int id;

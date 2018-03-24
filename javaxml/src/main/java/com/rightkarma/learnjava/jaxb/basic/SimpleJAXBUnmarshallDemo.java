@@ -1,12 +1,6 @@
-package com.rightkarma.learnjava.jaxb;
-
-import org.springframework.core.io.ClassPathResource;
+package com.rightkarma.learnjava.jaxb.basic;
 
 import javax.xml.bind.*;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 

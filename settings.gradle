@@ -9,4 +9,5 @@ include 'javaspring'
 include 'javamodel'
 include 'javasnippets'
 include 'javaxml'
+include 'jaxws'
 

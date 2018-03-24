@@ -1,4 +1,4 @@
-package com.rightkarma.learnjava.jaxb;
+package com.rightkarma.learnjava.jaxb.basic;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;

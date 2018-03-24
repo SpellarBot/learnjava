@@ -20,6 +20,8 @@
       <module name="javaspring_test" target="1.8" />
       <module name="javaxml_main" target="1.8" />
       <module name="javaxml_test" target="1.8" />
+      <module name="jaxws_main" target="1.8" />
+      <module name="jaxws_test" target="1.8" />
       <module name="learnjava_main" target="1.8" />
       <module name="learnjava_test" target="1.8" />
     </bytecodeTargetLevel>

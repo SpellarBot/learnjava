@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apache.cxf:cxf-rt-bindings-xml:3.1.6">
+    <CLASSES>
+      <root url="jar://C:/UserProgramFiles/gradle_user_home/caches/modules-2/files-2.1/org.apache.cxf/cxf-rt-bindings-xml/3.1.6/2db43126ae9c8efd95788938aaf35397e0dc13b4/cxf-rt-bindings-xml-3.1.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://C:/UserProgramFiles/gradle_user_home/caches/modules-2/files-2.1/org.apache.cxf/cxf-rt-bindings-xml/3.1.6/9256563b30bb213303436bdfc04502dce6daaef1/cxf-rt-bindings-xml-3.1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
