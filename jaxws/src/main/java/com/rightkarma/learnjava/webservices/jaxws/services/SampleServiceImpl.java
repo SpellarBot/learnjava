@@ -16,7 +16,7 @@ public class SampleServiceImpl implements SampleService {
         return "Hello " + name;
     }
 
-    public String helloStudent(Student student) {
+    public String registerStudent(Student student) {
         students.put(students.size() + 1, student);
         return "Hello " + student.getName();
     }

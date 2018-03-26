@@ -16,6 +16,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
+// LearningNote - use this class for testing branch 1, where cxf is configured without web.xml or in other words without WebApplicationInitializer
+// Server is started using Server class
 public class StudentTest {
 
     private Service service;
@@ -47,10 +49,10 @@ public class StudentTest {
     @Test
     public void test2() {
         Student student1 = new StudentImpl("Adam");
-        sampleServiceProxy.helloStudent(student1);
+        sampleServiceProxy.registerStudent(student1);
 
         Student student2 = new StudentImpl("Eve");
-        sampleServiceProxy.helloStudent(student2);
+        sampleServiceProxy.registerStudent(student2);
 
         Map<Integer, Student> students = sampleServiceProxy.getStudents();
         assertEquals("Adam", students.get(1).getName());

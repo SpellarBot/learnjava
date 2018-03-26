@@ -1,5 +1,6 @@
 ### reference:
 http://www.baeldung.com/introduction-to-apache-cxf
+http://www.baeldung.com/apache-cxf-with-spring
 
 Run the test class StudentTest .
 It directly calls Java classes also the Server end point ( you need run Server.main first before running the test)  

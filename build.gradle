@@ -7,6 +7,8 @@ allprojects {
     apply plugin: 'project-report'
     sourceCompatibility = 1.8
 
+    apply plugin: "war"
+
     repositories {
         mavenCentral()
         jcenter()
@@ -25,11 +27,37 @@ allprojects {
         compile 'org.springframework:spring-core:5.0.0.RELEASE'
         compile 'org.springframework:spring-context:5.0.0.RELEASE'
         compile 'org.springframework:spring-jdbc:5.0.0.RELEASE'
+
         compile 'org.hibernate:hibernate-core:4.1.4.Final'
 
         /*for hibernate cache*/
         compile 'org.hibernate:hibernate-ehcache:4.1.4.Final'
         compile 'net.sf.ehcache:ehcache:2.10.4'
+
+        /* web stuff */
+        compile 'org.springframework:spring-webmvc:5.0.0.RELEASE'
+        compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0-m02'
+        compile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
+
+        // for configuring java class and not web.xml
+        // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+        // LearningNote - What is compileOnly
+        // its almost same as "provided" in Maven or CompileOnly in gradle.
+        // it means that jar should not go in War file
+        // at run time the container/server will provide it.
+        // For code compilation, we put the api here.
+        compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+
+        /*
+        Notice that this artifact (org.apache.cxf:cxf-rt-frontend-jaxws:3.1.6) contains a file named javax.xml.ws.spi.Provider
+        inside the META-INF/services directory.
+        Java VM looks at the first line of this file to determine the JAX-WS implementation to make use of.
+        In this case, content of the line is org.apache.cxf.jaxws.spi.ProviderImpl, referring to the implementation supplied by Apache CXF.
+        */
+        // http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.apache.cxf%22%20AND%20a%3A%22cxf-rt-frontend-jaxws%22
+        compile "org.apache.cxf:cxf-rt-frontend-jaxws:3.1.6"
+        // http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.apache.cxf%22%20AND%20a%3A%22cxf-rt-transports-http-jetty%22
+        compile "org.apache.cxf:cxf-rt-transports-http-jetty:3.1.6"
 
 //    implementation 'com.google.guava:guava:21.0'
         testCompile group: 'junit', name: 'junit', version: '4.12'

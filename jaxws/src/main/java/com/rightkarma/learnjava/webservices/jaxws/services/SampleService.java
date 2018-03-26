@@ -12,7 +12,7 @@ public interface SampleService {
 
     public String hello(String name);
 
-    public String helloStudent(Student student);
+    public String registerStudent(Student student);
 
 
     /**

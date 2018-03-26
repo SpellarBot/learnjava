@@ -51,6 +51,8 @@ Thumbs.db
 out
 .idea/workspace.xml
 .idea/sonarlint/
+.idea
+.idea/*
 
 # Eclipse specific files/directories
 .settings
