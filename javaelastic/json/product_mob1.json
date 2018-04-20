@@ -1,0 +1,28 @@
+{
+  "name": "iPhone SE",
+  "camera": "12MP",
+  "storage": "32GB",
+  "display": "5inch",
+  "battery": "1960mAh",
+  "reviews": ["great phone", "good even in 2018"]
+}
+
+/*
+Add output
+
+{
+    "_index": "products",
+    "_type": "mobiles",
+    "_id": "1",
+    "_version": 1,
+    "result": "created",
+    "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+    },
+    "_seq_no": 0,
+    "_primary_term": 1
+}
+
+*/

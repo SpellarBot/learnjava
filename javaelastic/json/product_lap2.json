@@ -1,0 +1,9 @@
+{
+  "name": "Dell",
+  "storage": "1TB",
+  "RAM" : "8GB",
+  "display": "14inch",
+  "os": "Win10",
+  "reviews": ["Good for its price", "Great processing power"]
+}
+

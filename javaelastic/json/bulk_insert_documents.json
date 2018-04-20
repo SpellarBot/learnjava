@@ -1,0 +1,15 @@
+{  "index": {    "_index": "products",    "_type": "laptops",    "_id": "1"  }}
+{  "name": "Macbook Pro",  "storage": "500GB",  "RAM": "8GB",  "display": "5inch",  "os": "El Capitan",  "reviews": [    "bulky but great",    "large storage cap is great"  ]}
+{  "index": {    "_index": "products",    "_type": "laptops",    "_id": "2"  }}
+{  "name": "Dell",  "storage": "1TB",  "RAM": "8GB",  "display": "14inch",  "os": "Win10",  "reviews": [    "Good for its price",    "Great processing power"  ]}
+{  "index": {    "_index": "products",    "_type": "mobiles",    "_id": "1"  }}
+{  "name": "iPhone SE",  "camera": "12MP",  "storage": "32GB",  "display": "5inch",  "battery": "1960mAh",  "reviews": ["great phone", "good even in 2018"]}
+{  "index": {    "_index": "products",    "_type": "mobiles",    "_id": "2"  }}
+{  "name": "Samsung Galaxy",  "camera": "8MP",  "storage": "64GB",  "display": "5.2inch",  "battery": "1500mAh",  "reviews": ["Best Android Phone", "Loving it"]}
+{  "index": {    "_index": "products",    "_type": "mobiles",    "_id": "3"  }}
+{  "name": "Xaomi Note",  "camera": "10MP",  "storage": "128GB",  "display": "5.5inch",  "battery": "1500mAh",  "reviews": ["Too large", "Battery life issues", "Economical Android phone"]}
+{  "index": {    "_index": "products",    "_type": "shoes",    "_id": "1"  }}
+{  "name": "Nike",  "size": 8,  "color": "white"}
+{  "index": {    "_index": "products",    "_type": "shoes",    "_id": "2"  }}
+{  "name": "Adidas",  "size": 9,  "color": "black"}
+

@@ -1,0 +1,11 @@
+{
+  "name": "Macbook Pro",
+  "storage": "500GB",
+  "RAM": "8GB",
+  "display": "5inch",
+  "os": "El Capitan",
+  "reviews": [
+    "bulky but great",
+    "large storage cap is great"
+  ]
+}

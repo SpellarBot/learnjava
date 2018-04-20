@@ -21,7 +21,7 @@ note frequency of each word
 inverted index is then made that tells each document containing the word  
 So example:  
 
-```concept
+```
 Winter - 1 - Doc1  
 is - 2 - Doc1, Doc2  
 coming - 1 - Doc1  
@@ -81,5 +81,105 @@ metaphone for phonetic matching
 Yellow - some replicates may not be available.  
 Red - some shards not available. cluster not fully functional. need attn. asap.
 
-   
+**Commands**
+
+PUT - Create and Update - Idempotent   
+POST - only Update   - Not Idempotent  
+
+http://localhost:9200/_cat/indices?v&pretty  
+http://localhost:9200/_cat/nodes?v&pretty  
+http://localhost:9200/_cat/health?v&pretty  
+
+** Create index:**    
+PUT 
+http://localhost:9200/products?&pretty  
+http://localhost:9200/customers?&pretty  
+http://localhost:9200/orders?&pretty    
+
+Add Objects
+PUT 
+http://localhost:9200/products/mobiles/1?&pretty
+http://localhost:9200/products/laptops/1
+http://localhost:9200/products/shoes/1
+{ json product1 }  
+
+Get Objects  
+GET http://localhost:9200/products/mobiles/1  
+
+Object existence without details.  
+GET http://localhost:9200/products/mobiles/1?_source=false
+OUTPUT:  
+```json
+{
+    "_index": "products",
+    "_type": "mobiles",
+    "_id": "1",
+    "_version": 4,
+    "found": true
+}
+```
+
+Object with limited details.  
+GET http://localhost:9200/products/mobiles/1?_source=name,reviews
+OUTPUT:  
+```json
+{
+    "_index": "products",
+    "_type": "mobiles",
+    "_id": "1",
+    "_version": 4,
+    "found": true
+}
+```
+
+Updates  
+Whole document - just PUT again with whole doc. _version will be updated to next number  
+
+Use POST for partial update
+
+POST 
+http://localhost:9200/products/mobiles/1/_update
+```json
+{
+    "doc" : {
+      "color": "black"
+    }
+}
+```
+
+Update for integer using *script*  
+
+POST
+http://localhost:9200/products/shoes/1/_update
+{
+    "script": "ctx._source.size += 2"
+}
+
+*Deleting Documents/Index*  
+Use DELETE requests  
+
+Deleting object:  
+DELETE  
+http://localhost:9200/products/shoes/1  
+
+http://localhost:9200/products/shoes  
+
+**Multiple documents**
+
+*_mget*  
+POST http://localhost:9200/_mget  
+<query multiple docs>
+
+or move common components to parameters
+http://localhost:9200/_mget?index=products&type=laptops
+{   "docs": [     
+    {      "_id" : "1"     }, 
+    {      "_id" : "2"    }
+  ]
+}
+
+
+*_bulk*
+POST http://localhost:9200/_bulk
+<bulk insert documents>
 
