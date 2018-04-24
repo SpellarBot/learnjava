@@ -43,6 +43,9 @@ geo-hashes from longitude and latitude are used for geographical search
 metaphone for phonetic matching  
 "Did you mean?" searches use a Levenshtein automation.  
 
+### reference
+json-generator.com
+
 
 ### Key Points
 * Underlying engine is Lucene.  
@@ -75,7 +78,174 @@ metaphone for phonetic matching
 * Sharding allows - parallel search and improves performance.
 * Replication - set replicas of index. every shard should have corresponding replica. for failures.
 
+* TF/IDF Relevance
+* TF - Term Frequency - How often does the term appear in the field
+* IDF - Inverse Document frequency - How often does the term appear in the index
+* Field length norm - How long is the field which was searched.
 
+===========================
+
+*Field Datatypes*
+text keyword date long double boolean ip
+
+hierarchical  
+object, nested  
+
+specialized     
+geo_point, geo_shape, completion  
+
+* Dynamic Mapping - ES will guess the type when no right type given. 
+
+__Mapping__ - how data is stored and hence impacts search performance.
+
+String Fields - 
+* full text search. individual tokens in string are searchable.
+* keyword search - whole string values are searchable. 
+
+5.0 onwards - all strings are indexed by default.
+
+
+To see mappings in an index, use _mapping
+
+Caution - Mappings can be updated only at the time of index creationg.  
+And can't be edited later on.  
+
+```
+
+http://localhost:9200/products/_mapping
+
+```     
+
+
+*Edit Mapping* i.e. adding new field. Editing existing fields is not allowed.    
+
+http://localhost:9200/customers/_mapping/personal
+{
+    "properties": {
+        "customerSince": {
+            "type": "integer"
+        }
+    }
+}
+
+*Dynamic field mapping*  
+
+* don't put integers in quotes
+    set numeric detection to true for the index
+```
+http://localhost:9200/customers
+{
+    "mappings" : {
+        "my_type" : {
+            "numeric_detection": true
+        }
+    }
+}
+```
+* date - standard format - yyyy/MM/dd HH:mm:ss  
+    set date_detection:true
+    if set to false, standard format will not work. 
+
+* explicit mapping for index  
+set up settings also
+```
+PUT http://localhost:9200/books  
+{
+    "settings" : {
+        "number_of_shards" : 1, -- only at index creation.
+        "number_of_replicas" : 0
+    },
+    "dynamic":"strict", -- new fields are accepted when true. false means no new fields can be accepted. strict means exception thrown.
+    "mappings":{
+        "fiction":{
+            "properties":{
+                "title":{"type":"text"},
+                "author":{"type":"text"},
+                "available":{"type":"boolean"},
+                "pages":{"type":"integer"},
+                "cost":{"type":"float"},
+                "published":{"type":"date","format":"YYYY-MM-DD"}
+            }
+        }
+    }
+}
+```
+
+-- **_all** = all fields are concatenated and kept in one place.   
+This helps in searching all fields without worrying about which field has that data.
+```
+http://localhost:9200/movies  
+{
+    "mappings":{
+        "fiction":{
+            "_source":{
+                "enabled":false
+            },
+            "_all": {
+                "enabled": false
+            },
+            "properties":{
+                "title":{"type":"text"},
+                "director":{"type":"text"},
+                "actors":{"type":"object"},
+                "released":{
+                    "type":"date",
+                    "format":"YYYY-MM-DD"
+                }
+            }
+        }
+    }
+}
+```
+
+**match_mapping_type**
+use this for defining mapping templates
+
+example, below we are telling ES that numbers should be integers ( not long )  
+and strings should be "text" ( not both text and keyword )  
+
+PUT localhost:9200/index_one  
+```json
+{
+  "mappings":{
+    "type_one":{
+      "dynamic_templates":[
+        {
+          "integers":{
+          "match_mapping_type":"long",
+          "mapping": { "type":"integer"}
+          }
+        },
+        {
+          "strings":{
+                    "match_mapping_type":"string",
+                    "mapping": { "type":"text"}
+          }
+        }
+      ],
+      "properties": {
+        "full_name":{
+          "type":"text",
+          "fields": {"keyword":{"type":"keyword","ignore_above":256}}
+        },
+        "name":{
+          "properties":{
+            "first":{"type":"text", "copy_to":["full_name "]},
+            "last":{"type":"text", "copy_to":["full_name "]},
+            "middle":{"type":"text"},"fields":{"keyword":{"type":"keyword","ignore_above":256}}
+          }
+        }
+      }
+    }
+  }
+}
+```
+ 
+**copy field**  
+refer full name above  
+
+
+=================================================================
 **CLuster status**  
 
 Yellow - some replicates may not be available.  
@@ -172,14 +342,332 @@ POST http://localhost:9200/_mget
 
 or move common components to parameters
 http://localhost:9200/_mget?index=products&type=laptops
+```
 {   "docs": [     
     {      "_id" : "1"     }, 
     {      "_id" : "2"    }
   ]
 }
+```
 
 
 *_bulk*
 POST http://localhost:9200/_bulk
 <bulk insert documents>
 
+**BULK INDEXING**  
+
+<buld indexing doc> -- ids will be auto generated  
+
+## Query DSL
+
+PUT http://localhost:9200/customers/personal/_bulk 
+generated.json
+
+*SEARCH*  
+http://localhost:9200/customers/personal/_search?q=wyoming  
+http://localhost:9200/customers/personal/_search?q=wyoming&sort=age:desc  
+http://localhost:9200/customers/personal/_search?q=state:wyoming&from=5&size=2
+http://localhost:9200/customers/personal/_search?q=state:wyoming&from=5&size=2&explain
+
+*SEARCH USING BODY*  
+```
+http://localhost:9200/customers/personal/_search
+{
+    "query": { "match_all" : {} } 
+} 
+
+http://localhost:9200/customers/personal/_search
+{
+    "query": { "match_all" : {} },
+    "size": 3 
+} 
+
+http://localhost:9200/customers/personal/_search
+{
+    "query": { "match_all" : {} },
+    "sort": { "age" : { "order" : "desc" } },
+    "size": 3 
+} 
+
+
+http://localhost:9200/customers/personal/_search
+{
+    "query": { "term" : { "name": "gates"} }
+} 
+```
+__term__ - search requires exact match for**   
+
+*SEARCH USING SCORE*
+
+Use boolean clause  
+```
+http://localhost:9200/customers/personal/_search
+{
+    "query" : {
+        "bool" : {
+            "must": { "match_all": {} },
+            "filter" : {
+                "range" : {
+                    "age" : {
+                        "gte":20,
+                        "lte":30
+                    }
+                }
+            }
+        }
+    }
+}
+
+http://localhost:9200/customers/personal/_search
+{
+    "query" : {
+        "bool" : {
+            "must": {  "match":  { "state": "alabama" } },
+            "filter" : [
+                { "term" : { "gender" : "female" } },
+                { "range" : {  "age": { "gte" : "50" } } }
+            ]
+        }
+    }
+}
+```
+**AGGREGATIONS**
+
+Metrics  
+Bucketing  
+Matrix - Experimental - confirm before use  
+Pipeline Pipeline     
+    
+```
+http://localhost:9200/customers/personal/_search
+{
+    "size" : 0, 
+    "aggs" : {
+        "avg_age" : {
+            "avg" : {  
+                "field": "age"
+            }
+        }
+    }
+}
+```
+-- size 0 means no docs are required. just the average.
+
+metrics with filter:  
+```
+http://localhost:9200/customers/personal/_search
+{
+    "size" : 0,
+    "query" : {
+        "bool" : {
+            "filter" : {
+                "match" : { "state" : "minnesota" }
+            }
+        }
+    }, 
+    "aggs" : {
+        "avg_age" : {
+            "avg" : {  
+                "field": "age"
+            }
+        }
+    }
+}
+```
+*More Statistics*  
+```
+http://localhost:9200/customers/personal/_search
+{
+    "size" : 0,
+    "aggs" : {
+        "age_stats" : {
+            "stats" : {
+                "field" : "age"
+            }
+        }
+    }
+}
+```
+
+*Cardinality*
+```
+http://localhost:9200/customers/personal/_search  
+{
+    "size": 100,
+    "aggs": {
+        "age_count" : {
+            "cardinality" : {
+                "field" : "state"
+            }
+        }
+    }
+}
+```
+
+**SEARCH vs AGGREGATION**
+
+Search - inverted index of the terms present in documents  
+the terms themselves can be hashed and stored in index  
+question - which doc contains the string  
+
+Aggregation - actual values of terms are needed. hash values donot suffice  
+question - what is the value of the field in the documents  
+
+Important - **fielddata**  
+fielddata is build on demand when a field is used for aggregations, sorting etc.
+
+ES constructs fielddata in lazy fashion.
+Default - disbled for text fields.  
+
+ENABLE fielddata 
+note this is running for "personal" under customers index
+
+```  
+http://localhost:9200/customers/_mapping/personal    
+{
+    "size": 0,
+    "aggs": {
+        "gender_count" : {
+            "cardinality" : {
+                "field" : "gender"
+            }
+        }
+    }
+}
+```
+
+-- returns 2 as value in response  
+
+BUCKETING - IS - GROUP BY CLAUSE  
+
+gender bucket example
+
+```  
+http://localhost:9200/customers/_mapping/personal    
+{
+    "size": 0,
+    "aggs": {
+        "gender_bucket" : {
+            "terms" : {
+                "field" : "gender"
+            }
+        }
+    }
+}
+```
+
+Range based bucketing..
+```  
+http://localhost:9200/customers/_mapping/personal    
+{
+    "size": 0,
+    "aggs": {
+        "age_ranges" : {
+            "range" : {
+                "field" : "age",
+                "ranges": [
+                       {"to" : 30 },
+                       {"from" : 30, "to" : 40 },
+                       {"from" : 40, "to" : 55 },
+                       {"from" : 55 }
+                ]
+            }
+        }
+    }
+}
+```
+
+
+Use *keyed* in above query to get map response instead of Array  
+```
+http://localhost:9200/customers/_mapping/personal
+{
+    "size": 0,
+    "aggs": {
+        "age_ranges" : {
+            "range" : {
+                "field" : "age",
+                "keyed" : true,
+                "ranges": [
+                       { "key": "young", "to" : 30 },
+                       { "key": "qtr-aged", "from" : 30, "to" : 40 },
+                       { "key": "middle-aged", "from" : 40, "to" : 55 },
+                       { "key": "senior", "from" : 55 }
+                ]
+            }
+        }
+    }
+}
+```
+
+*Bucketing and Aggregation*  
+here - query for male/female average age
+
+```    
+http://localhost:9200/customers/_mapping/personal
+{
+    "size": 0,
+    "aggs": {
+        "gender_bucket" : {
+                "terms" : { "field" : "gender" },
+                "aggs" : { "average_age" : { "avg" : {"field":"age"} } }
+        }
+    }
+}
+```
+
+
+bucket on gender, then age, and then find average age
+
+```  
+http://localhost:9200/customers/_mapping/personal
+{
+	"size": 0,
+	"aggs": {
+    	"gender_bucket" : {
+        	"terms" : { 
+        		"field" : "gender" 
+        	},
+        	"aggs" : {
+            	"age_ranges": {
+            		"range":{
+            			"field":"age",
+            			"keyed":true, 
+            			"ranges": [
+            				{"key":"Young","to" : 30 },
+            				{"key":"Old","from" : 30 }
+            			]
+            		}, 
+            		"aggs":{
+            			"average_age" : { 
+            				"avg" : {
+            					"field":"age"
+            				} 
+            			} 
+            		}
+            	}
+        	}
+		}
+	}
+}
+```
+
+MULTIPLE FILTERS
+```
+http://localhost:9200/customers/_mapping/personal
+{
+	"size": 0,
+	"aggs": {
+    	"states" : {
+        	"filters" : {
+        	    "filters" : {
+        	        "w" : {"match" :{"state":"washington"}},
+        	        "n" : {"match" :{"state":"north carolina"}},
+        	        "s" : {"match" :{"state":"south carolina"}}
+        	    }
+        	}
+		}
+	}
+}
+```
