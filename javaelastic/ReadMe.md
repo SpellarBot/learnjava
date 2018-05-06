@@ -1,52 +1,8 @@
-**General Notes**   
-Basic element - Document  
-Documents are part of Index  
-Index are kept in Shards  
-Shards are kept in nodes/servers aka cluster  
+##########################################################################################
+# General Notes
+##########################################################################################   
 
-ES is easy to scale horizontally.  
-ES allows more clusters to the servers for better load balancing. 
-
-_Case 1 node:_   
-Node1: Sh1 Sh2 Sh3 Sh4
-
-_Case 2 nodes:_   
-Node1: Sh1 Sh2  
-Node2: Sh3 Sh4
-
-**ES Basics**  
-tokenize text into words  
-remove punctuation  
-note frequency of each word  
-inverted index is then made that tells each document containing the word  
-So example:  
-
-```
-Winter - 1 - Doc1  
-is - 2 - Doc1, Doc2  
-coming - 1 - Doc1  
-ours - 1 - Doc2  
-the - 1 - Doc2  
-...and so on..  
-```
-This inverted index is called postings list in **technical terms**.  
-
-more complicated searchs like find words ending with _ing_  
-in this case you can reverse the words and save in the inverted index.. then search with words that have _gni_ i.e. reverse of search string _ing_..  
-
-for sub-string searches, break each word in n-grams and save in the inverted index.  
-
-yours will be saved with yo, you, our, ours, urs, etc..  
-and then use for substring matches..
-
-geo-hashes from longitude and latitude are used for geographical search  
-metaphone for phonetic matching  
-"Did you mean?" searches use a Levenshtein automation.  
-
-### reference
-json-generator.com
-
-
+## ES - System Level Information
 ### Key Points
 * Underlying engine is Lucene.  
 * Distributed - scales to thousands of nodes
@@ -55,6 +11,10 @@ json-generator.com
 * Powerful Query DSL - complex queries expressed simply
 * Schemaless - Index data without an explicit schema
 
+* Basic element - Document  
+* Documents are part of Index  
+* Index are kept in Shards  
+* Shards are kept in nodes/servers aka cluster  
 * Cluster has nodes. nodes can be 1 to several thousands.
 * Each node performs indexing of documents added to ES
 * all nodes participates in search
@@ -77,49 +37,88 @@ json-generator.com
 * Shards - every node has only subset of data. Complete data needs all shards.
 * Sharding allows - parallel search and improves performance.
 * Replication - set replicas of index. every shard should have corresponding replica. for failures.
+* ES is easy to scale horizontally.  
+* ES allows more clusters to the servers for better load balancing. 
+
+_Case 1 node:_   
+Node1: Sh1 Sh2 Sh3 Sh4
+
+_Case 2 nodes:_   
+Node1: Sh1 Sh2  
+Node2: Sh3 Sh4
+
+
+**System Commands**
+
+PUT - Create and Update - Idempotent   
+POST - only Update   - Not Idempotent  
+
+http://localhost:9200/_cat/indices?v&pretty  
+http://localhost:9200/_cat/nodes?v&pretty  
+http://localhost:9200/_cat/health?v&pretty  
+
+    CLuster status:  
+    Yellow - some replicates may not be available.  
+    Red - some shards not available. cluster not fully functional. need attn. asap.
+
+
+## ES - Data leve basics  
+* tokenize text into words  
+* remove punctuation  
+* note frequency of each word  
+* inverted index is then made that tells each document containing the word  
+    ```text
+        example:  
+        Winter - 1 - Doc1  
+        is - 2 - Doc1, Doc2  
+        coming - 1 - Doc1  
+        ours - 1 - Doc2  
+        the - 1 - Doc2  
+        ...and so on..  
+    ```
+This inverted index is called postings list in **technical terms**.  
+
+more complicated searchs like find words ending with _ing_   
+in this case you can reverse the words and save in the inverted index..   
+then search with words that have _gni_ i.e. reverse of search string _ing_..    
+
+For sub-string searches, break each word in n-grams and save in the inverted index.    
+
+Yours will be saved with yo, you, our, ours, urs, etc..  
+and then use for substring matches..
+
+geo-hashes from longitude and latitude are used for geographical search  
+metaphone for phonetic matching  
+"Did you mean?" searches use a Levenshtein automation.  
+
+### reference
+json-generator.com
 
 * TF/IDF Relevance
 * TF - Term Frequency - How often does the term appear in the field
 * IDF - Inverse Document frequency - How often does the term appear in the index
 * Field length norm - How long is the field which was searched.
 
-===========================
+##########################################################################################
+# FIELDS and MAPPINGS
+##########################################################################################
+**Field Datatypes**  
+Regular Data Types: Text, keyword, date, long, double, boolean, ip
+Hierarchical: object, nested    
+Specialized: geo_point, geo_shape, completion    
 
-*Field Datatypes*
-text keyword date long double boolean ip
+**Search Notes**  
+* **full text search** - individual tokens in string are searchable.
+* **keyword search** - whole string values are searchable. 
+* 5.0 onwards - all strings are indexed by default.
+* Caution - Mappings can be updated only at the time of index creationg. And can't be edited later on.
+* **Edit Mapping**  - can be done while adding new field. Editing existing fields is not allowed.    
+* To see mappings in an index, use **_mapping**
 
-hierarchical  
-object, nested  
-
-specialized     
-geo_point, geo_shape, completion  
-
-* Dynamic Mapping - ES will guess the type when no right type given. 
-
-__Mapping__ - how data is stored and hence impacts search performance.
-
-String Fields - 
-* full text search. individual tokens in string are searchable.
-* keyword search - whole string values are searchable. 
-
-5.0 onwards - all strings are indexed by default.
-
-
-To see mappings in an index, use _mapping
-
-Caution - Mappings can be updated only at the time of index creationg.  
-And can't be edited later on.  
-
-```
-
-http://localhost:9200/products/_mapping
-
-```     
-
-
-*Edit Mapping* i.e. adding new field. Editing existing fields is not allowed.    
+### Sample : Adding integer data type to index  
 
 http://localhost:9200/customers/_mapping/personal
+```json
 {
     "properties": {
         "customerSince": {
@@ -128,28 +127,34 @@ http://localhost:9200/customers/_mapping/personal
     }
 }
 
-*Dynamic field mapping*  
-
-* don't put integers in quotes
-    set numeric detection to true for the index
 ```
-http://localhost:9200/customers
+
+**Dynamic Mapping** - ES will guess the type when no right type given. 
+Mapping - how data is stored and hence impacts search performance.  
+
+By default, when a previously unseen field is found in a document, Elasticsearch will add the new field to the type mapping. 
+This behaviour can be disabled, both at the document and at the object level, by setting the dynamic parameter to **false** 
+(to ignore new fields) or to **strict** (to throw an exception if an unknown field is encountered).
+
+Sample : Adding integer data type using **Dynamic field mapping**  
+-> Don't put integers in quotes. Set numeric detection to true for the index
+
+### Sample : For index - department, doctype departmentage, turn on numeric_detection 
+PUT http://localhost:9200/department
+```json
 {
     "mappings" : {
-        "my_type" : {
+        "departmentage" : {
             "numeric_detection": true
         }
     }
 }
 ```
-* date - standard format - yyyy/MM/dd HH:mm:ss  
-    set date_detection:true
-    if set to false, standard format will not work. 
+### Sample : Explicit mapping of field data types for an index   
+Here setting up index - books, doctype - fiction and specifying type of data that will be posted for the object.  
 
-* explicit mapping for index  
-set up settings also
+PUT http://localhost:9200/books
 ```
-PUT http://localhost:9200/books  
 {
     "settings" : {
         "number_of_shards" : 1, -- only at index creation.
@@ -171,10 +176,12 @@ PUT http://localhost:9200/books
 }
 ```
 
--- **_all** = all fields are concatenated and kept in one place.   
+### Sample : Explicit mapping for searching all fields in an index - doctype.
+Mapping name -  _all    
 This helps in searching all fields without worrying about which field has that data.
-```
-http://localhost:9200/movies  
+
+PUT http://localhost:9200/movies
+```json
 {
     "mappings":{
         "fiction":{
@@ -198,10 +205,13 @@ http://localhost:9200/movies
 }
 ```
 
-**match_mapping_type**
-use this for defining mapping templates
+### Sample : Explicit mapping to specify what data types to use for numbers, text
+keyword : **match_mapping_type**
 
-example, below we are telling ES that numbers should be integers ( not long )  
+index - index_one  
+doctype - type_one  
+
+Below we are telling ES that numbers should be integers ( not long )  
 and strings should be "text" ( not both text and keyword )  
 
 PUT localhost:9200/index_one  
@@ -210,23 +220,12 @@ PUT localhost:9200/index_one
   "mappings":{
     "type_one":{
       "dynamic_templates":[
-        {
-          "integers":{
-          "match_mapping_type":"long",
-          "mapping": { "type":"integer"}
-          }
-        },
-        {
-          "strings":{
-                    "match_mapping_type":"string",
-                    "mapping": { "type":"text"}
-          }
-        }
+        {"integers":{ "match_mapping_type":"long","mapping": { "type":"integer"} } },
+        { "strings":{ "match_mapping_type":"string", "mapping": { "type":"text"} }}
       ],
       "properties": {
-        "full_name":{
-          "type":"text",
-          "fields": {"keyword":{"type":"keyword","ignore_above":256}}
+        "full_name":{ "type":"text", 
+            "fields": {"keyword":{"type":"keyword","ignore_above":256}}
         },
         "name":{
           "properties":{
@@ -240,43 +239,115 @@ PUT localhost:9200/index_one
   }
 }
 ```
- 
+
+### Sample : mapping to create a field from other fields. 
 **copy field**  
-refer full name above  
+refer full name above which is getting its values from name field  
+
+##########################################################################################
+# ADD DATA 
+##########################################################################################
+
+### Sample : create index    
+PUT http://localhost:9200/products?&pretty  
+PUT http://localhost:9200/customers?&pretty  
+PUT http://localhost:9200/orders?&pretty    
+
+### Sample : Add Object
+PUT http://localhost:9200/products/mobiles/1?&pretty
+PUT http://localhost:9200/products/laptops/1
+PUT http://localhost:9200/products/shoes/1
+```json
+{
+  "name": "Macbook Pro",
+  "storage": "500GB",
+  "RAM" : "8GB",
+  "display": "5inch",
+  "os": "El Capitan",
+  "reviews": ["bulky but great", "large storage cap is great"]
+}
+```  
+
+### Sample : Bulk insert data using _bulk
+POST http://localhost:9200/_bulk
+```json
+{  "index": {    "_index": "products",    "_type": "laptops",    "_id": "1"  }}
+{  "name": "Macbook Pro",  "storage": "500GB",  "RAM": "8GB",  "display": "5inch",  "os": "El Capitan",  "reviews": [    "bulky but great",    "large storage cap is great"  ]}
+{  "index": {    "_index": "products",    "_type": "laptops",    "_id": "2"  }}
+{  "name": "Dell",  "storage": "1TB",  "RAM": "8GB",  "display": "14inch",  "os": "Win10",  "reviews": [    "Good for its price",    "Great processing power"  ]}
+{  "index": {    "_index": "products",    "_type": "mobiles",    "_id": "1"  }}
+{  "name": "iPhone SE",  "camera": "12MP",  "storage": "32GB",  "display": "5inch",  "battery": "1960mAh",  "reviews": ["great phone", "good even in 2018"]}
+{  "index": {    "_index": "products",    "_type": "mobiles",    "_id": "2"  }}
+{  "name": "Samsung Galaxy",  "camera": "8MP",  "storage": "64GB",  "display": "5.2inch",  "battery": "1500mAh",  "reviews": ["Best Android Phone", "Loving it"]}
+{  "index": {    "_index": "products",    "_type": "mobiles",    "_id": "3"  }}
+{  "name": "Xaomi Note",  "camera": "10MP",  "storage": "128GB",  "display": "5.5inch",  "battery": "1500mAh",  "reviews": ["Too large", "Battery life issues", "Economical Android phone"]}
+{  "index": {    "_index": "products",    "_type": "shoes",    "_id": "1"  }}
+{  "name": "Nike",  "size": 8,  "color": "white"}
+{  "index": {    "_index": "products",    "_type": "shoes",    "_id": "2"  }}
+{  "name": "Adidas",  "size": 9,  "color": "black"}
+```
+
+### Sample - bulk insert data using _bulk command
+PUT http://localhost:9200/customers/personal/_bulk 
+Refere file - generated.json
+
+### Sample - adding objects using nested posting
+Example - post a blog, along with user information. Here user information is repeated for each blog 
+but thats what ES recommends to keep search and selection fast.
+
+PUT http://localhost:9200/index_posts/blogs/1
+```json
+{
+  "title":"FacFictions",
+  "date":"2016-04-18",
+  "user":{
+    "id":"1",
+    "name": "James"
+  }
+}
+```
 
 
-=================================================================
-**CLuster status**  
+##########################################################################################
+# EDIT DATA 
+##########################################################################################
 
-Yellow - some replicates may not be available.  
-Red - some shards not available. cluster not fully functional. need attn. asap.
+### Sample : Use POST with _update for partial update
+note the "doc" keyword   
+POST http://localhost:9200/products/mobiles/1/_update
+```json
+{
+    "doc" : {
+      "color": "black"
+    }
+}
+```
 
-**Commands**
+### Sample :  Update integer values using run time calculations/scripts  
+POST http://localhost:9200/products/shoes/1/_update
+```json
+{
+    "script": "ctx._source.size += 2"
+}
+```
 
-PUT - Create and Update - Idempotent   
-POST - only Update   - Not Idempotent  
+##########################################################################################
+# DELETE DATA 
+##########################################################################################
 
-http://localhost:9200/_cat/indices?v&pretty  
-http://localhost:9200/_cat/nodes?v&pretty  
-http://localhost:9200/_cat/health?v&pretty  
+### Sample : Deleting object using object id  
+DELETE http://localhost:9200/products/shoes/1  
 
-** Create index:**    
-PUT 
-http://localhost:9200/products?&pretty  
-http://localhost:9200/customers?&pretty  
-http://localhost:9200/orders?&pretty    
 
-Add Objects
-PUT 
-http://localhost:9200/products/mobiles/1?&pretty
-http://localhost:9200/products/laptops/1
-http://localhost:9200/products/shoes/1
-{ json product1 }  
 
-Get Objects  
-GET http://localhost:9200/products/mobiles/1  
+##########################################################################################
+# GET DATA USING IDs - This is not search. you know what you are fetching
+##########################################################################################
 
-Object existence without details.  
+### Sample : Basic select . Get any Object using id  
+    GET http://localhost:9200/products/mobiles/1  
+ 
+### Sanple - Object existence without getting details by using _source=false in the GET call   
 GET http://localhost:9200/products/mobiles/1?_source=false
 OUTPUT:  
 ```json
@@ -289,7 +360,7 @@ OUTPUT:
 }
 ```
 
-Object with limited details.  
+### Sample - Getting Object with limited details by using _source in GET call  
 GET http://localhost:9200/products/mobiles/1?_source=name,reviews
 OUTPUT:  
 ```json
@@ -302,47 +373,29 @@ OUTPUT:
 }
 ```
 
-Updates  
-Whole document - just PUT again with whole doc. _version will be updated to next number  
+### Sample : query multiple documents using *_mget*  
 
-Use POST for partial update
-
-POST 
-http://localhost:9200/products/mobiles/1/_update
+POST http://localhost:9200/_mget
 ```json
 {
-    "doc" : {
-      "color": "black"
+  "docs": [
+    {
+      "_index": "products",
+      "_type" : "laptops",
+      "_id" : "1"
+    },
+    {
+      "_index": "products",
+      "_type" : "laptops",
+      "_id" : "2"
     }
+  ]
 }
 ```
-
-Update for integer using *script*  
-
-POST
-http://localhost:9200/products/shoes/1/_update
-{
-    "script": "ctx._source.size += 2"
-}
-
-*Deleting Documents/Index*  
-Use DELETE requests  
-
-Deleting object:  
-DELETE  
-http://localhost:9200/products/shoes/1  
-
-http://localhost:9200/products/shoes  
-
-**Multiple documents**
-
-*_mget*  
-POST http://localhost:9200/_mget  
-<query multiple docs>
-
-or move common components to parameters
-http://localhost:9200/_mget?index=products&type=laptops
-```
+  
+Note - keep common components to parameters or move them to json. here index and doc type is part of URL  
+POST http://localhost:9200/_mget?index=products&type=laptops
+```json
 {   "docs": [     
     {      "_id" : "1"     }, 
     {      "_id" : "2"    }
@@ -351,58 +404,104 @@ http://localhost:9200/_mget?index=products&type=laptops
 ```
 
 
-*_bulk*
-POST http://localhost:9200/_bulk
-<bulk insert documents>
+##########################################################################################
+# SEARCH (not GET) - Using various searching functionalities provided by ES
+##########################################################################################
 
-**BULK INDEXING**  
 
-<buld indexing doc> -- ids will be auto generated  
-
-## Query DSL
-
-PUT http://localhost:9200/customers/personal/_bulk 
-generated.json
-
-*SEARCH*  
-http://localhost:9200/customers/personal/_search?q=wyoming  
+### Sample : Basic Search by passing paramters in URL
+* search using query parameter 
+http://localhost:9200/customers/personal/_search?q=wyoming   
+* search using query parameter and give sort order for result set
 http://localhost:9200/customers/personal/_search?q=wyoming&sort=age:desc  
+* pagination - search using query parameter and ask to return only specific number of objects from certain location 
 http://localhost:9200/customers/personal/_search?q=state:wyoming&from=5&size=2
+* pagination - same as above - but explore internal logic - Only for Deep understanding of ES
 http://localhost:9200/customers/personal/_search?q=state:wyoming&from=5&size=2&explain
 
-*SEARCH USING BODY*  
-```
-http://localhost:9200/customers/personal/_search
+### Sample : Basic Search by passing query parameters in body
+* basic search for getting all docs
+http://localhost:9200/customers/personal/_search   
+```json
 {
     "query": { "match_all" : {} } 
 } 
-
-http://localhost:9200/customers/personal/_search
+```
+* basic search for getting limited result set size
+http://localhost:9200/customers/personal/_search   
+```json
 {
     "query": { "match_all" : {} },
     "size": 3 
 } 
-
-http://localhost:9200/customers/personal/_search
+```
+* basic search - limited size, output is sorted.
+http://localhost:9200/customers/personal/_search   
+```json
 {
     "query": { "match_all" : {} },
     "sort": { "age" : { "order" : "desc" } },
     "size": 3 
 } 
+```
 
+### Sample - select data using field 
+POST http://localhost:9200/index_posts/blogs/_search
+```json
+{
+	"query":{
+		"match": {"user.name":"James"}
+	}
+}
+```
 
-http://localhost:9200/customers/personal/_search
+### Sample : Search using "_term". ie. exact string match for give property.
+Search objects where name contains gates.
+POST http://localhost:9200/customers/personal/_search
+```json
 {
     "query": { "term" : { "name": "gates"} }
 } 
 ```
-__term__ - search requires exact match for**   
 
-*SEARCH USING SCORE*
+### Sample : Use boolean clause
+bool - uses must, filter, should, must_not  
+* must - match is mandatory
+* filter - applies criteria on output
+* should - if must is present, should does not matter but influences the score. if no must clause, then should is used.
+* must_not - result set data is filtered out using this
 
-Use boolean clause  
+POST someurl   
+```json
+{
+  "query": {
+    "bool" : {
+      "must" : {
+        "term" : { "user" : "kimchy" }
+      },
+      "filter": {
+        "term" : { "tag" : "tech" }
+      },
+      "must_not" : {
+        "range" : {
+          "age" : { "gte" : 10, "lte" : 20 }
+        }
+      },
+      "should" : [
+        { "term" : { "tag" : "wow" } },
+        { "term" : { "tag" : "elasticsearch" } }
+      ],
+      "minimum_should_match" : 1,
+      "boost" : 1.0
+    }
+  }
+}
 ```
-http://localhost:9200/customers/personal/_search
+
+More examples:   
+
+POST http://localhost:9200/customers/personal/_search
+```json
 {
     "query" : {
         "bool" : {
@@ -418,8 +517,10 @@ http://localhost:9200/customers/personal/_search
         }
     }
 }
+```
 
-http://localhost:9200/customers/personal/_search
+POST http://localhost:9200/customers/personal/_search
+```json
 {
     "query" : {
         "bool" : {
@@ -432,15 +533,37 @@ http://localhost:9200/customers/personal/_search
     }
 }
 ```
-**AGGREGATIONS**
 
-Metrics  
-Bucketing  
-Matrix - Experimental - confirm before use  
-Pipeline Pipeline     
-    
-```
-http://localhost:9200/customers/personal/_search
+
+############## END #######################
+##########################################################################################
+# AGGREGATIONS
+##########################################################################################
+
+**SEARCH vs AGGREGATION**
+
+Search - inverted index of the terms present in documents  
+the terms themselves can be hashed and stored in index  
+question - which doc contains the string  
+
+Aggregation - actual values of terms are needed. hash values donot suffice  
+question - what is the value of the field in the documents  
+
+Important - **fielddata**  
+fielddata is build on demand when a field is used for aggregations, sorting etc.
+
+ES constructs fielddata in lazy fashion.
+Default - disbled for text fields.  
+
+AGGREGATIONS: 
+* Metrics. 
+* Bucketing  
+* Matrix - Experimental - confirm before use  
+* Pipeline Pipeline     
+
+### Sample : get average for a field on complete index
+POST http://localhost:9200/customers/personal/_search     
+```json
 {
     "size" : 0, 
     "aggs" : {
@@ -452,11 +575,12 @@ http://localhost:9200/customers/personal/_search
     }
 }
 ```
--- size 0 means no docs are required. just the average.
+_Note - size 0 means no docs are required. just the average._
 
-metrics with filter:  
-```
-http://localhost:9200/customers/personal/_search
+### Sample : get average for a field for any result set using a filter
+  
+POST http://localhost:9200/customers/personal/_search
+```json
 {
     "size" : 0,
     "query" : {
@@ -475,9 +599,10 @@ http://localhost:9200/customers/personal/_search
     }
 }
 ```
-*More Statistics*  
-```
+
+### Sample : Getting complete set of Statistics  
 http://localhost:9200/customers/personal/_search
+```json
 {
     "size" : 0,
     "aggs" : {
@@ -490,41 +615,9 @@ http://localhost:9200/customers/personal/_search
 }
 ```
 
-*Cardinality*
-```
-http://localhost:9200/customers/personal/_search  
-{
-    "size": 100,
-    "aggs": {
-        "age_count" : {
-            "cardinality" : {
-                "field" : "state"
-            }
-        }
-    }
-}
-```
-
-**SEARCH vs AGGREGATION**
-
-Search - inverted index of the terms present in documents  
-the terms themselves can be hashed and stored in index  
-question - which doc contains the string  
-
-Aggregation - actual values of terms are needed. hash values donot suffice  
-question - what is the value of the field in the documents  
-
-Important - **fielddata**  
-fielddata is build on demand when a field is used for aggregations, sorting etc.
-
-ES constructs fielddata in lazy fashion.
-Default - disbled for text fields.  
-
-ENABLE fielddata 
-note this is running for "personal" under customers index
-
-```  
-http://localhost:9200/customers/_mapping/personal    
+### Sample : Cardinality : A single-value metrics aggregation that calculates an approximate count of distinct values.
+POST http://localhost:9200/customers/personal/_search  
+```json
 {
     "size": 0,
     "aggs": {
@@ -536,15 +629,17 @@ http://localhost:9200/customers/_mapping/personal
     }
 }
 ```
+_note - this only retuns gender_count value as 2 ( male and female ), and not actual values of gender._  
 
--- returns 2 as value in response  
 
-BUCKETING - IS - GROUP BY CLAUSE  
+##########################################################################################
+# BUCKETING - IS - GROUP BY CLAUSE - using terms, range
+##########################################################################################
 
-gender bucket example
+### Sample - gender bucket example
 
-```  
-http://localhost:9200/customers/_mapping/personal    
+POST http://localhost:9200/customers/_mapping/personal    
+```json
 {
     "size": 0,
     "aggs": {
@@ -556,10 +651,19 @@ http://localhost:9200/customers/_mapping/personal
     }
 }
 ```
+RESULT : values of genders along without counts  
+```json
+{ 
+  "buckets": [
+                {"key": "female","doc_count": 500},
+                {"key": "male","doc_count": 499}
+            ]
+}
+```
 
-Range based bucketing..
-```  
-http://localhost:9200/customers/_mapping/personal    
+### Sample - Range based bucketing..
+POST http://localhost:9200/customers/_mapping/personal    
+```json
 {
     "size": 0,
     "aggs": {
@@ -577,11 +681,23 @@ http://localhost:9200/customers/_mapping/personal
     }
 }
 ```
-
-
-Use *keyed* in above query to get map response instead of Array  
+RESULT:  
+```json
+{"age_ranges": {
+  "buckets": [  
+    {"key": "*-30.0","to": 30,"doc_count": 227},
+    {"key": "30.0-40.0","from": 30,"to": 40,"doc_count": 150},
+    {"key": "40.0-55.0","from": 40,"to": 55,"doc_count": 209},
+    {"key": "55.0-*","from": 55,"doc_count": 417} 
+  ]
+  }
+}
 ```
-http://localhost:9200/customers/_mapping/personal
+
+### Sample - Range based bucketing with MAP response
+Use *keyed* in above query to get map response instead of Array    
+POST http://localhost:9200/customers/_mapping/personal
+```json
 {
     "size": 0,
     "aggs": {
@@ -600,12 +716,24 @@ http://localhost:9200/customers/_mapping/personal
     }
 }
 ```
+RESULT:  
+```json
+{
+"age_ranges": {
+  "buckets": {
+    "young": {"to": 30,"doc_count": 227},
+    "qtr-aged": {"from": 30,"to": 40,"doc_count": 150},
+    "middle-aged": {"from": 40,"to": 55,"doc_count": 209},
+    "senior": {"from": 55,"doc_count": 417}
+  }
+}
+}
+```
 
-*Bucketing and Aggregation*  
-here - query for male/female average age
-
-```    
-http://localhost:9200/customers/_mapping/personal
+### Sample - Bucketing and then Aggregation
+Example - query for male/female average age
+POST http://localhost:9200/customers/_mapping/personal
+```json
 {
     "size": 0,
     "aggs": {
@@ -616,12 +744,18 @@ http://localhost:9200/customers/_mapping/personal
     }
 }
 ```
+RESULT:  
+```json
+{"buckets": [
+                {"key": "female","doc_count": 500,"average_age": {"value": 48.54}},
+                {"key": "male","doc_count": 499,"average_age": {"value": 47.44488977955912}}
+]}
+```
 
+### Sample - Bucketing on gender, then bucket on age, and then Aggregate data to see average age
 
-bucket on gender, then age, and then find average age
-
-```  
-http://localhost:9200/customers/_mapping/personal
+POST http://localhost:9200/customers/_mapping/personal
+```json
 {
 	"size": 0,
 	"aggs": {
@@ -652,10 +786,33 @@ http://localhost:9200/customers/_mapping/personal
 	}
 }
 ```
-
-MULTIPLE FILTERS
+RESULT:  
+```json
+{"buckets": [
+ {"key": "female","doc_count": 500,
+    "age_ranges": {
+      "buckets": {
+        "Young": {"to": 30,"doc_count": 119,"average_age": {"value": 22.3781512605042}},
+        "Old": {"from": 30,"doc_count": 381,"average_age": {"value": 56.71128608923885}}
+        }
+      }
+    },
+  {"key": "male","doc_count": 499,
+    "age_ranges": {
+      "buckets": {
+        "Young": {"to": 30,"doc_count": 106,"average_age": {"value": 22.264150943396228}},
+        "Old": {"from": 30,"doc_count": 393,"average_age": {"value": 54.23664122137404}}
+        }
+      }
+    }
+    ]
+}
 ```
+
+### Sample - bucketing using aggs and filters.
+
 http://localhost:9200/customers/_mapping/personal
+```json
 {
 	"size": 0,
 	"aggs": {
@@ -671,3 +828,170 @@ http://localhost:9200/customers/_mapping/personal
 	}
 }
 ```
+RESULT:  
+```json
+{"aggregations": {
+        "states": {
+            "buckets": {
+                "n": {"doc_count": 53},
+                "s": {"doc_count": 52},
+                "w": {"doc_count": 18}
+            }
+        }
+    }
+}
+```
+
+=================
+
+### Sample - Posting nested objects - incorrect and correctly
+
+Caution - Nested Mapping - has to be enabled otherwise ES rearranges data and object information is lost.  
+
+Wrong Way: here data will get messed up   
+PUT http://localhost:9200/userfan/fans/1
+```json
+{
+  "group" : "fans",
+  "user" : [    
+    {"first" : "John", "last" :  "Smith"},
+    {"first" : "Alice","last" :  "White"}
+  ]
+}
+```
+will be stored with flattened array data:
+```json
+{
+  "group" :        "fans",
+  "user.first" : [ "alice", "john" ],
+  "user.last" :  [ "smith", "white" ]
+}
+```
+
+Right Way: Using nested clause when index is created.
+PUT http://localhost:9200/userfan 
+```json
+{
+  "mappings":{
+    "fans":{
+      "properties":{
+        "user":{
+          "type":"nested"
+        }
+      }
+    }
+  }
+}
+```
+
+POST DATA:  
+PUT http://localhost:9200/userfan/fans/1
+```json
+{
+  "group" : "fans",
+  "user" : [
+    {
+      "first" : "John",
+      "last" :  "Smith"
+    },
+    {
+      "first" : "Alice",
+      "last" :  "White"
+    }
+  ]
+}
+```
+
+Try Searches - Alice Smith (no match) and Alice White ( rec matches):  
+POST http://localhost:9200/userfan/_search
+```json
+{
+  "query": {
+    "nested": {
+      "path": "user",
+      "query": {
+        "bool": {
+          "must": [
+            { "match": { "user.first": "Alice" }},
+            { "match": { "user.last":  "Smith" }} 
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+### Note - parent child data in Elastic search - slow and not recommended.
+Notes:    
+* Parent can be updated without reindexing the children  
+* children can be added, removed and changed without affecting the parent  
+* Can query for the children of a particular parent.  
+* Parent - child should be on same shard.
+* ( index is split into shards. so docs live on different machines on the shards.)
+* slow performance as compared to regular flat data.  
+* one join per index
+* one parent per child
+
+keywords: **join**  , **has_parent**, **has_child**  
+
+##########################################################################################
+# DESIGNING FOR SCALE
+##########################################################################################   
+
+### Sample - Create index alias with routing param
+
+POST http://localhost:9200/userfan/_alias/indiafans
+```json
+{
+  "routing":"indiafans",
+  "filter":{
+    "term":{
+      "fanregion":"india"
+    }
+  }
+}
+```
+
+to post data - 
+POST http://localhost:9200/indiafans/fan/1
+...
+Here based upon fanregion, data will be filtered and routing use.  
+Routing value - generates hash - routes to particular shard.  
+so all indiafans data will go to one shard. This will improve performance when searching data.  
+
+### Managing replicas..
+at time of creation:
+
+PUT http://localhost:9200/books
+```json
+{
+  "settings":{
+    "number_of_shards":1,
+    "number_of_replicas":0
+  },
+  "mappings":{
+    // rest of the stuff
+  }
+}
+```
+
+change later:
+PUT http://localhost:9200/books/_settings
+```json
+{
+  "index":{
+    "number_of_replicas":2
+  }
+}
+```
+Even better-   
+PUT http://localhost:9200/books/_settings
+```json
+{
+  "index":{
+    "auto_expand_replicas":"0-all"
+  }
+}
+```
+
