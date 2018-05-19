@@ -56,6 +56,7 @@ POST - only Update   - Not Idempotent
 http://localhost:9200/_cat/indices?v&pretty  
 http://localhost:9200/_cat/nodes?v&pretty  
 http://localhost:9200/_cat/health?v&pretty  
+http://localhost:9200/_cluster/state?v&pretty
 
     CLuster status:  
     Yellow - some replicates may not be available.  
@@ -995,3 +996,265 @@ PUT http://localhost:9200/books/_settings
 }
 ```
 
+### Split Brain scenario
+When multiple nodes believe themselves to be the master is called split brain scenario.  
+This can happen if due to some issue nodes lose connection to other nodes and thinks that it now needs to act as master.  
+
+### ES COnfiguration
+Documents in the index should split across mulitple nodes/servers in a Cluster.
+This is called Shard. 
+
+By default ES creates 5 shards for any index.  
+
+* Specifying number of shards - only at time of index creation
+* Specifying number of replicas - dynamic. can be changed anytime.
+
+For Every shard to lie on different node :  
+num_nodes = num_shards * ( num_replicas + 1 )
+so if you want 5 shards, each having 1 replica, then as per formula num_nodes = 10  
+
+Sample create index:  
+PUT localhost:9200/my_sample_index
+```json
+{
+  "settings":{
+    "number_of_shards": 2,
+    "number_of_replicas": 0
+  }
+}
+```
+
+
+1 Shard would translate to 1 Lucene index.  
+
+#### ES Config - Routing
+
+You can route documents to a shard and restrict searches to hit certain shards.  
+
+Example - add a document using routing:   
+PUT localhost:9200/books_index/docs/1?routing=A
+```json
+{
+  "name": "book-1"
+}
+```
+
+Example - bulk insertion with routing:
+PUT localhost:9200/books_index/docs/_bulk  
+```json
+{ "index": [ "_id" : "2", "_routing" : "A"] }
+{ "name": "book-2" }
+{ "index": [ "_id" : "3", "_routing" : "B"] }
+{ "name": "book-3" }
+{ "index": [ "_id" : "4", "_routing" : "A"] }
+{ "name": "book-4" }
+```
+
+Example - search docs using routing:   
+Here search will fetch all docs from only 1 shard ( route=A)  
+POST localhost:9200/books_index/docs/_search?q=*&routing=A
+```json
+{
+  "query": {
+    "match_all":{}
+  }
+}
+```
+
+Example - set up routing based index  
+Create aliases for routing. Here use these to add / search docs on index - alias1/2
+
+POST localhost:9200/_aliases
+```json
+{
+  "actions" : [
+    { "add" : { "index" : "books_index", "alias" : "alias1", "routing" : "A" } },
+    { "add" : { "index" : "books_index", "alias" : "alias2", "routing" : "B" } }
+  ]
+}
+```
+
+Example - routing - search and add  
+POST localhost:9200/_aliases
+```json
+{
+  "actions" : [
+    { "add" : { "index" : "books_index", 
+                "alias" : "alias3", 
+                "search_routing" : "A",
+                 "index_routing" : "B"
+              } 
+    }
+  ]
+}
+```
+
+Example - routing - remove command    
+POST localhost:9200/_aliases
+```json
+{
+  "actions" : [
+    { "remove" : { "index" : "books_index", "alias" : "alias1", "routing" : "A" } },
+    { "remove" : { "index" : "books_index", "alias" : "alias2", "routing" : "B" } },
+    { "remove" : { "index" : "books_index", "alias" : "alias3", "routing" : "C" } }
+  ]
+}
+```
+
+Example - search preference for shard  
+
+POST localhost:9200/randomindex/_search?preference=_shards:0
+```json
+{
+  "query": {
+    "match_all":{}
+  }
+}
+```
+
+Elastic search uses TF/IDF for search.  
+**Term Frequency / Inverse Document Frequency**  
+
+* Term Frequency - How often does the term appear in the field ?  
+* Inverse Document Frequency - How often does the term appear in the index.  
+* Field length norm - How long is the Field which was searched ?
+
+Similarity MOdels for searches:  
+* Okapi BM25 ( from ES 6 onwards )
+* Classic TF/IDF ( before ES 6 )
+* boolean   
+
+Check Similarity model:  
+PUT localhost:9200/index
+```json
+{
+"settings" : {
+  "index" : {
+    "similarity" : {
+      "default" : {
+        "type" : "BM25"
+      }
+    }
+  }
+}
+}
+```
+
+
+* similarity model can be per field.  
+
+=================
+
+Customize similiarity models are possible using "similarity" option.
+```json
+{
+  "settings":{
+    "index":{
+      "similarity": {
+        //.....rest of the stuff.....
+      }
+    }
+  }
+}
+```
+
+Analyzer - pre processor of data .
+synonym analyzer - add synonyms for specific terms for the data begin added.
+
+discount_overlaps - what is this ?
+
+Merging Segments:
+when creating index, give option in index creation call - 
+"index.merge.policy.expunge_deletes_allowed" : 1
+
+
+To see segments:
+GET localhost:9200/sample_index/_segments
+shows lucene indexes
+
+to see segments, another command to show high level information is :
+GET localhost:9200/_cat/segments.
+This shows generation information, that tells how old a segment is.
+committed - false - means - not flushed to disk. 
+
+ 
+
+Add analyzer for preprocessing of data. example - adding synonyms for a word while saving the document.  
+
+ Force merging of segments :
+ 
+ POST localhost:9200/sample_index/_forcemerge?max_num_segments=1
+ {
+     "only_expunge_deletes" : "false",
+     "flush": "false"
+ }
+ flush=false means flush the index once the merge is done. flushing will get rid of caches associated with the index.
+ max_num_segments=1 - number of segments per shard to merge to - set 1 to fully merge the index. default will check if merge is needed or not.
+ only_expunge_deletes = false means - only merge those segments that have deleted documents.
+ 
+========
+Caching: turned off by default  
+
+To turn on caching for certain queries - 
+
+POST localhost:9200/_search?request_cache=true
+```json
+{
+"query":{
+  "match" : {"name":"John Smith"}
+}
+}
+```
+
+to see cache getting used  
+GET localhost:9200/_stats/request_cache   
+look for **memory_size** in result set showing cache size.  
+
+TO Enable Cache for Index:   
+
+PUT localhost:9200/index_one
+```json
+{
+  "settings" :{
+    "index.requests.cache.enable":"false"
+  },
+  "mappings":{
+    "type_one":{
+      "properties":{
+        "status":{
+          "type":"keyword"
+        }
+      }
+    }
+  }
+}
+```
+
+**Check cache size**  
+GET localhost:9200/_nodes/stats/indices/query_cache  
+
+### Analyzers
+
+Character filters:   
+Clean up the strings. remove html. convert & etc.
+
+Tokenizer:  
+Split into individual terms , break  on white space, punctuation
+
+Token Filters:  
+change , add , remove terms. Lowercase all words. add synonym. Remove stopwords (a, the, in , on etc.). 
+
+
+### TERM and MATCH QUERIES
+TERM - 
+* looks for exact term in inverted index.
+* does not know the presence of the analyzer.
+* great for keywords, numbers, dates, where exact matches are important.
+* less likely to match irrelevant documents.     
+
+MATCH - 
+* queries are analyzed before looking up the inverted index.
+* understands how the fields have been analyzed. 
+* useful when searching full text fields with a large body of text. 
+* more like to match irrelevant documents. 
+* does not go through query parsing process, does not match wild cards, prefixes etc.
