@@ -6,12 +6,12 @@ package com.rightkarma.learnjava.javabasic.enums;
  * Takes a char as constructor variable.
  * You can get this variable using a get method ( here getNameVar )
  */
-public enum DeptRole {
+public enum EnumWithConstructor {
     HOD("H"), PROFESSOR("P"), ASSISTANT("A");
 
     private String nameVar;
 
-    private DeptRole(String nameAsString) {
+    private EnumWithConstructor(String nameAsString) {
         this.nameVar = nameAsString;
     }
 
@@ -25,8 +25,8 @@ public enum DeptRole {
     }
 
     public static void main(String[] args) {
-        System.out.println(DeptRole.ASSISTANT);
-        System.out.println(DeptRole.HOD);
+        System.out.println(EnumWithConstructor.ASSISTANT);
+        System.out.println(EnumWithConstructor.HOD);
     }
 
 }

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ComponentScan({"com.purihim"})
-@PropertySource("app.properties")
+@PropertySource("app.properties") // TODO implement env - https://blog.jayway.com/2014/02/16/spring-propertysource/
 public class AppConfig {
 
     /*Code works without this also PropertySourcesPlaceholderConfigurer*/
