@@ -1,4 +1,6 @@
-### Static methods as constructor
+## Chapter 2 - Creating and Destroying Objects
+
+### Item 1. Consider Static factory methods instead of constructors
 
 **Advantages:**  
 * You can give proper names for different constructors
@@ -32,7 +34,7 @@ few factory methods one can implement:
 * getType - like getInstance but when factory method is in different class. 
 * newType - like newInstance     
 
-### Consider a builder when having multiple constructors
+### Item 2. Consider a builder when faced with many constructor parameters
 
 **telescoping constructor** pattern works but it is hard to write client code when there are many parameters, harder still to read it.
 Example:
@@ -54,7 +56,7 @@ Create bean with default parameter less constructor and then set the properties.
 * Create builder.build method that can class private constructor of the class.
 * setter return back the builder object 
  
-### Enforce the singleton property with a private constructor or an Enum type.
+### Item 3. Enforce the singleton property with a private constructor or an Enum type.
 Singleton:
 * instantiated once only
 * represents unique system component like windows manager, file system
@@ -65,11 +67,11 @@ Approaches:
 * SingletonUsingStaticFactory - private constructor. private static field holds the reference, accessible via getInstance(). This is better becuase if you change the implementation to non-singleton, client would not know.
 * SingletonUsingEnum - preferred approach.
 
-### Enforce noninstantiability with a private Constructor
+### Item 4. Enforce noninstantiability with a private Constructor
 Make a class noninstantiable by putting a private constructor in it.  
 This is typically done for Utility classes so that people don't instantiate them.
 
-### Avoid creating unncessary objects.
+### Item 5. Avoid creating unncessary objects.
 Specific example of String class.  
 Wrong:
 ```
@@ -86,10 +88,12 @@ Find variables that can be instantiated once and then reused.
 
 Prefer primitives to boxing. and watch for unintentional boxing. Within loop, autoboxing can cost several seconds of processing time and have **negative impact on performance**.  
 
-### 6 . Eliminate obsolete object references
+### Item 6 . Eliminate obsolete object references
 Ref class - ObsoleteObjectsNotRemoved
 
-### 7 . Avoid finalizers
+## Chapter 3 - Methods common to All Objects
+
+### Item 7 . Avoid finalizers
 * Never do anything time critical in finalizer (try-catch-finally) as you don't know when the code will execute.
 * For example, depending upon finalizer to release a persistent lock on your database is a good way to bring your entire distributed system to a **grinding halt**.
 * Uncaught exceptions - another major issue with finalizer. Uncaught exceptions are ignore and object finalization terminates. This can leave objects in corrupt state.
@@ -107,7 +111,8 @@ Examples:
 Recommendation:  
 * call terminate method in code and in finally block
 
-### 8. Obey the general contract when overriding _equals_ method
+### Item 8. Obey the general contract when overriding _equals_ method
+ref: equalscontract.main
 * don't override when not needed.
     a) each instance is expected to be unique ( so default equals will compare ref )
     b) logically not required.
@@ -116,5 +121,113 @@ Recommendation:
     e) singleton classes
     
     When to provide ?  
-    
+    * comparing pojo classes.
+    // TODO 
+    * look for Java SE _equals_ **contract** online.
+
+**Contract:**  
+* Reflexivity - object must be equal to itself
+* Symmetry - any two objects must agree on whether they are equal. so if a.equals(b) is true then, b.equals(a) should also be true.
+* Transitivity -  if a.equals(b) is true, and b.equals(c) is true, then a.equals(c) should be true.
+* Consistency - if 2 objects are equal, they must remain equal all time unless one or both of them are modified.
+* Non-nullity - all objects must be unequal to null. so thats why check for nulls in equals method ( actually we use instanceof check ) and throw false, else you run the risk of throwing NPE.
+```
+@Override
+public boolean equals (Object o){
+    if ( !( o instanceof MyType) ) // instanceof can manage null arg
+        return false;
+    MyType mt = (MyType) o; // cast for further comparisons
+}
+``` 
+
+
+**Notes:**
+There is no way to extend an instantiable class and add a value component while preserving the equals contract, unless you are willing to forgo the benefits of objects oriented abstraction.
+
+**Other Caveats**
+* always override hashcode along with equals.
+* changing Object class in param means you are not Overriding equals. so this is fixed:
+```
+public boolean equals ( Object o ){
+...
+}
+```
+
+### Item 9 Always override _hashcode_ when you override _equals_
+
+YOu have to do that to maintain the hashcode/equals contract.
+* when invoked on same object, should generate same hashcode, unless object changes.
+* as part of contract, if a.equals(b) is true, then both a and b should have same hashcode.
+* 2 unequal objects may produce same hashcode.
+
+### Item 10 Always override toString()
+* Always write toString(). It helps in logging.
+* document it well
+* all variables in toString() should be available directly. Otherwise their is a risk that programmer might parse toString to get that information.
+
+
+### Item 11 Override clone judiciously
+`https://docs.oracle.com/javase/7/docs/api/java/lang/Cloneable.html`   
+A class implements the Cloneable interface to indicate to the Object.clone() method that it is legal for that method to make a field-for-field copy of instances of that class.
+  
+Invoking Object's clone method on an instance that does not implement the Cloneable interface results in the exception CloneNotSupportedException being thrown. 
+
+Issue - Java Object's clone method is protected. 
+Solution - So people need to invoke clone by using reflection.
+Risk - clone may not be accessible, so reflection may fail.
+
+Absolute requirements:  
+* `x.clone() != x`
+* `x.clone().getClass() != x.getClass()`
+
+x.clone.equals(x) is not an absolute requirement of cloning.
+
+* it does not make immutable classes to support clone as objects created will be same as original.
+* many cases, you may not provide clone, unless super class implements.
+* Good approach - provide constructor to return clone
  
+    ```
+    public A ( A a ) {
+    ...
+    }
+    ```
+    
+    OR static factory
+    
+    ```
+    public static newA ( A a ) {
+        ...
+    }
+    ```
+### Item 12. COnsider implementing `Comparable`
+* for Value classes
+* Important for classes that will be used in Collections.
+
+* rules - 
+    * Reflexivity - a == b, then b == a 
+    * Symmetry - a > b, then b < a
+    * Transitivity - `x.compareTo(y) > 0 && y.compareTo(z) > 0 => x.compareTo(z) > 0` 
+
+* If x.compareTo(y) should throw exception then y.compareTo(x) should throw exception. 
+
+* **Strongly recommend** - 
+    `x.compareTo(y)==0 => x.equalsTo(y)`
+
+How to compare:  
+* Use < and > 
+* Double.compare
+* Float.compare
+* Compare most significant field first. Example PIN code in Address class.
+
+## Chapter 4
+
+### Item 13. Minimize the accessibility of classes and members
+* decouples client and implementation
+* sub class method can't be more restrictive than super class method access modifier
+* methods from interface are implicitly public
+* **instance fields should never be public.**
+    * if final for mutable object - no control
+    * if non-final , no control on modification
+    
+    * if final for non-mutable, client can still access and difficult to remove the field in future.
+    
