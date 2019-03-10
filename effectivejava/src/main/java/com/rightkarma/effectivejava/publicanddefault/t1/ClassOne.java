@@ -1,10 +1,10 @@
 package com.rightkarma.effectivejava.publicanddefault.t1;
 
-class C1 implements C1I{
+class ClassOne implements IClassOne {
 
     @Override
     public String toString() {
-        return "C1...";
+        return "ClassOne...";
     }
 
     @Override

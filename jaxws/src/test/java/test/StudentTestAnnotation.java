@@ -23,9 +23,9 @@ public class StudentTestAnnotation {
             = new AnnotationConfigApplicationContext(ClientConfiguration.class);
     private SampleService sampleServiceProxy= (SampleService) context.getBean("client");
 
-    @Test
+    /*@Test
     public void whenUsingHelloMethod_thenCorrect() {
         String response = sampleServiceProxy.hello("John Doe");
         assertEquals("Hello John Doe!", response);
-    }
+    }*/
 }

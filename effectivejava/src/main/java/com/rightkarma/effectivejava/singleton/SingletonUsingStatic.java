@@ -8,8 +8,4 @@ public class SingletonUsingStatic {
     private SingletonUsingStatic() {
     }
 
-    // hack ? - reflection.
-    // AccessibleObject.setAccessible
-    // Safegaurd - Constructor should throw exception if called again.
-
 }

@@ -39,7 +39,7 @@ public class StudentTest {
         sampleServiceProxy = service.getPort(PORT_NAME, SampleService.class);
     }
 
-    @Test
+    /*@Test
     public void test1() {
         String endpointResponse = sampleServiceProxy.hello("Ravi W");
         String localResponse = sampleServiceImpl.hello("Ravi D");
@@ -57,5 +57,5 @@ public class StudentTest {
         Map<Integer, Student> students = sampleServiceProxy.getStudents();
         assertEquals("Adam", students.get(1).getName());
         assertEquals("Eve", students.get(2).getName());
-    }
+    }*/
 }

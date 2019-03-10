@@ -1,12 +1,19 @@
 package com.rightkarma.effectivejava.publicanddefault.t1;
 
-import com.rightkarma.effectivejava.publicanddefault.t2.C2;
+import com.rightkarma.effectivejava.publicanddefault.t2.ClassTwo;
+
+// learn - ClassTwo can't see ClassOne
+// And that is way for you to hide your implementation within package.
+// For other classes to use your class, give them interface of your class that is public.
+// So here ClassTwo has interface object for ClassOne but can't see ClassOne implementation.
+// It can only call methods from ClassOne
+
 
 public class Main {
     public static void main(String[] args) {
-        C1I c1 = new C1();
-        C2 c2 = new C2();
-        c2.setC1(c1);
-        c2.doit();
+        IClassOne c1 = new ClassOne();
+        ClassTwo classTwo = new ClassTwo();
+        classTwo.setClassOne(c1);
+        classTwo.printString();
     }
 }

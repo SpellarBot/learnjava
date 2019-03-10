@@ -1,3 +1,4 @@
+# NOTES
 ## Chapter 2 - Creating and Destroying Objects
 
 ### Item 1. Consider Static factory methods instead of constructors
@@ -131,6 +132,10 @@ ref: equalscontract.main
 * Transitivity -  if a.equals(b) is true, and b.equals(c) is true, then a.equals(c) should be true.
 * Consistency - if 2 objects are equal, they must remain equal all time unless one or both of them are modified.
 * Non-nullity - all objects must be unequal to null. so thats why check for nulls in equals method ( actually we use instanceof check ) and throw false, else you run the risk of throwing NPE.
+
+if you override equals, then you need to override hashCode, but reverse is not true.
+
+
 ```
 @Override
 public boolean equals (Object o){
@@ -219,7 +224,7 @@ How to compare:
 * Float.compare
 * Compare most significant field first. Example PIN code in Address class.
 
-## Chapter 4
+## Chapter 4 - Classes and Interfaces
 
 ### Item 13. Minimize the accessibility of classes and members
 * decouples client and implementation
@@ -228,6 +233,136 @@ How to compare:
 * **instance fields should never be public.**
     * if final for mutable object - no control
     * if non-final , no control on modification
-    
     * if final for non-mutable, client can still access and difficult to remove the field in future.
+    * Exception - Static fields. ( CAPITALIZED usually.)
+    * Hide Array fields and don't put getters for it. if you do, use cloning or Collections.
+        *
+        ```
+        private static final Thing[] PRIVATE_VALUES = { ... };
+        public static final List<Thing> VALUES = Collections.unmodifiableList(Arrays.asList(PRIVATE_VALUES));
+        ```
+        OR
+        ```
+        private static final Thing[] PRIVATE_VALUES = { ... };
+        public static final Thing[] values(){
+            return PRIVATE_VALUES.clone();
+        }
+        ```
+
+### Item 14 . In public classes, use accessor methods, not public fields
+* use getters and setters.
+
+### Item 15 . Minimize Mutability
+An immutable class is simply a class whose instances can't be modified.  
+Examples - String, BigDecimal, BigInteger
+
+To make class Immutable, follow these five rules:
+* Don't provide any methods that modify the object's state.
+* Ensure that classes can't be extended.
+    * make class final
+* make all fields final
+* make all fields private
+* Ensure exclusive access to any mutable component
+* Immutable objects are inherently thread safe
+* Immutable classes don't and shouldn't implement clone
+
+* **Disadvantage** - different objects for each different value.
+
+Reference - Complex.class - See how it returns new objects without modifying the object itself.
+This approach is known as _functional_ approach.
+
+Other approaches:
+* provide mutable companion class. For String, StringBuilder is provided.
+* make constructor private and provide static factory for new instance
+
+### Item 16 - Favor composition over inheritance
+* Inheritance violates encapsulation.
+* Forced to override multiple methods in subclass if methods call other class methods.
+* Subclass with no override is safer but not risk free. if later version of parent class adds a method of same name and different return type, subclass will not compile.
+* inheritance propagates flaws.
+
+_forwarding_ - Method of new class calling method of contained class and return the results.
+
+### Item 17 - Design and document for inheritance or else prohibit it
+* a class may have to provide hooks into its internal workings in the form of judiciously chosen protected methods.
+* The only way to test a class designed for inheritance is to write sub classes.
+* Constructor should not call methods that are overridden
+* Cloning, Serialization should not use overridden methods
+
+**Problem** - It is common, but it is a problem that neither sub-classes are avoided, nor documentation done. 
+Two ways to prohibit subclassing.
+
+* make class **_final_**
+* public static factory instead of contructor
+* another safety feature - methods meant for overriding, don't use within that class.. That way overriding that method would not change behaviour of any other method.
+
+### Item 18 - Prefer interfaces to abstract classes
+* Class can extend only one class, but multiple interfaces
+* easy to add interfaces to existing classes
+* ideal for mixins . **mixin** is a type that a class can implement in addition to its primary type.
+
+* easy to add new methods to abstract class
+
+### Item 19 - use interfaces only to define types
+* dont use for holding Constants.
+
+ 
+### Item 20 - Prefer class hierarchies to tagged classes
+Reference class - Figure. can be Circle or Rectangle  
+Numerous shortcomings. difficult to read and maintain.  
+
+Solution - use class hierarchy
+
+### Item 21 - Use function objects to represent strategies
+*** function pointers, lambdas etc were not part of java at the time of book writing..***
+
+### Item 22 - Favor static member classes over nonstatic
+applicable to _nested classes_.  
+**4 kinds:**  
+* static member ( think ordinary class in another class. can access private members. access like any other static member)
+* nonstatic member
+* anonymous 
+* local
+All but first are called _inner classes_.
+
+* if you delcare a member class that does not require access to an enclosing instance, always put the static modifier in its declaration.
+
+* Non static member class 
+Usage - implemenations of Map interface typically use nonstatic member classes to implement their collection views whic are retunred by Maps keySet, entrySet and values methods.
+
+
+* Anonymous class - 
+    * it is not member of enclosing class
+    * declared and instantiated together
+    * can't have static members
+    **USAGE:**
+    * function objects like implementing sort on the fly 
+    * process objects - runnable, thread
+    * within static factory methods 
     
+* Local classes -least used
+
+## Chapter 5 - Generics
+
+More things to understand
+
+### Item 23 : Don't use raw types in new code.
+
+Raw types
+
+|Type | Example|
+        |-----|--------|
+     |Parametrized type | List\<String\> |
+     |Actual Type parameter | String |
+     |Generic Type | List\<E\> |
+     |Formal Type Parameter | E |
+     |Unbounded wildcard type | List\<?\> |
+     |Raw type | List |
+     |Bounded Type parameter| \<E extends Number\> |
+     |Recursive Type bound | \<T extends Comparable\<T\>\> |
+     |Bounded wildcard type| List\<? extends Number\> |
+     |Generic method | static \<E\> List\<E\> asList(E[] a) |
+     |Type Token | String.class |
+
+### Item 24 : Eliminate unchecked warnings
+

@@ -1,0 +1,32 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name = "com.rightkarma.learnjava.hibernate.model.EmployeeMnpi" table = "EMPLOYEE_MNPI">
+        <meta attribute = "class-description">
+            This class contains the employee mnpi mappings.
+        </meta>
+
+        <!-- alternate mapping if you want MNPI to have its own id.-->
+        <id name = "mnpiId" type = "int">
+            <column name="MNPI_ID"></column>
+            <generator class="increment"/>
+        </id>
+
+        <one-to-one name = "employee" class="com.rightkarma.learnjava.hibernate.model.Employee" property-ref="employeeMnpi"/>
+
+
+        <!--<id name = "mnpiId" type = "int">
+            <column name="EMPLOYEE_ID"></column>
+            <generator class="foreign">
+                <param name="property">employee</param>
+            </generator>
+        </id>
+        &lt;!&ndash;constrained="true" - exactly one row&ndash;&gt;
+        <one-to-one name = "employee" class="com.rightkarma.learnjava.hibernate.model.Employee" constrained="true"/>-->
+
+        <property name = "dob" column = "DOB" type = "java.util.Date"/>
+    </class>
+</hibernate-mapping>

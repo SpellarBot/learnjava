@@ -62,5 +62,6 @@ public class ConstructorBuilderPattern {
         sodium = builder.sodium;
         carbohydrate = builder.carbohydrate;
     }
+
 }
 
