@@ -79,7 +79,7 @@ http://localhost:9200/_cluster/state?v&pretty
     ```
 This inverted index is called postings list in **technical terms**.  
 
-more complicated searchs like find words ending with _ing_   
+more complicated searches like find words ending with _ing_   
 in this case you can reverse the words and save in the inverted index..   
 then search with words that have _gni_ i.e. reverse of search string _ing_..    
 
@@ -112,7 +112,7 @@ Specialized: geo_point, geo_shape, completion
 * **full text search** - individual tokens in string are searchable.
 * **keyword search** - whole string values are searchable. 
 * 5.0 onwards - all strings are indexed by default.
-* Caution - Mappings can be updated only at the time of index creationg. And can't be edited later on.
+* Caution - Mappings can be updated only at the time of index creating. And can't be edited later on.
 * **Edit Mapping**  - can be done while adding new field. Editing existing fields is not allowed.    
 * To see mappings in an index, use **_mapping**
 
@@ -410,7 +410,7 @@ POST http://localhost:9200/_mget?index=products&type=laptops
 ##########################################################################################
 
 
-### Sample : Basic Search by passing paramters in URL
+### Sample : Basic Search by passing parameters in URL
 * search using query parameter 
 http://localhost:9200/customers/personal/_search?q=wyoming   
 * search using query parameter and give sort order for result set
@@ -554,7 +554,7 @@ Important - **fielddata**
 fielddata is build on demand when a field is used for aggregations, sorting etc.
 
 ES constructs fielddata in lazy fashion.
-Default - disbled for text fields.  
+Default - disabled for text fields.  
 
 AGGREGATIONS: 
 * Metrics. 
@@ -1001,7 +1001,7 @@ When multiple nodes believe themselves to be the master is called split brain sc
 This can happen if due to some issue nodes lose connection to other nodes and thinks that it now needs to act as master.  
 
 ### ES COnfiguration
-Documents in the index should split across mulitple nodes/servers in a Cluster.
+Documents in the index should split across multiple nodes/servers in a Cluster.
 This is called Shard. 
 
 By default ES creates 5 shards for any index.  
@@ -1145,7 +1145,7 @@ PUT localhost:9200/index
 
 =================
 
-Customize similiarity models are possible using "similarity" option.
+Customize similarity models are possible using "similarity" option.
 ```json
 {
   "settings":{

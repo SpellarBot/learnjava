@@ -73,7 +73,7 @@ Thread-0|false|TERMINATED|5
 * Synchronized code is known as critical sections
 * JVM Supports it via monitors
 * Every Java Object is associated with a monitor
-* Before a thread enters a critial section, it must get a lock on the monitor
+* Before a thread enters a critical section, it must get a lock on the monitor
 * if monitor is already blocked, thread is blocked
 * Shared variables are copied into thread's working memory
 * This ensures access to most recent values
@@ -91,7 +91,7 @@ Thread-0|false|TERMINATED|5
 * wait set - all waiting threads
 * IllegalMonitorStateException - if thread invokes wait or notify but it actually does not have the lock on the object.
 
-**Threading Utilitites**
+**Threading Utilities**
 * Task Executor services
 * Fork/Join framework
 * Concurrent collections

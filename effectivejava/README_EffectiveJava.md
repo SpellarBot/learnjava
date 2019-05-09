@@ -5,7 +5,7 @@
 
 **Advantages:**  
 * You can give proper names for different constructors
-* Constructor with same set of parameters are possible as these will be two seperate static methods
+* Constructor with same set of parameters are possible as these will be two separate static methods
 * Unlike regular constructors, a new object does not need to be created everytime. static methods can return the same object everytime.  
 An immutable class using static method as constructor can guarantee that no two instances of same class exist. So a==b will be true always. This means clients can use == instead of a.equals(b) which can improve performance.
 * It is possible to return subtype of a class as object.  
@@ -25,13 +25,13 @@ Example JDBC
 
 **DisAdvantages:**
 * if you give only static constructors, and no public or default constructor, the class can't be sub-classed.
-* static method constructors are not readily distuiguishable from other methods.
+* static method constructors are not readily distinguishable from other methods.
 
 few factory methods one can implement:  
 * valueof - returns an instance that has, loosely speaking, the same value as its parameters. 
 * of - same as valueof
 * getInstance - returns an instance that is described by the parameters but cannot be said to have the same value.
-* newInstance - gaurantees new instance.
+* newInstance - guarantees new instance.
 * getType - like getInstance but when factory method is in different class. 
 * newType - like newInstance     
 
@@ -65,14 +65,14 @@ Singleton:
 
 Approaches:
 * SingletonUsingStatic - private constructor. public static field holds the reference.
-* SingletonUsingStaticFactory - private constructor. private static field holds the reference, accessible via getInstance(). This is better becuase if you change the implementation to non-singleton, client would not know.
+* SingletonUsingStaticFactory - private constructor. private static field holds the reference, accessible via getInstance(). This is better because if you change the implementation to non-singleton, client would not know.
 * SingletonUsingEnum - preferred approach.
 
 ### Item 4. Enforce noninstantiability with a private Constructor
 Make a class noninstantiable by putting a private constructor in it.  
 This is typically done for Utility classes so that people don't instantiate them.
 
-### Item 5. Avoid creating unncessary objects.
+### Item 5. Avoid creating unnecessary objects.
 Specific example of String class.  
 Wrong:
 ```
@@ -293,7 +293,7 @@ _forwarding_ - Method of new class calling method of contained class and return 
 Two ways to prohibit subclassing.
 
 * make class **_final_**
-* public static factory instead of contructor
+* public static factory instead of constructor
 * another safety feature - methods meant for overriding, don't use within that class.. That way overriding that method would not change behaviour of any other method.
 
 ### Item 18 - Prefer interfaces to abstract classes
@@ -304,7 +304,7 @@ Two ways to prohibit subclassing.
 * easy to add new methods to abstract class
 
 ### Item 19 - use interfaces only to define types
-* dont use for holding Constants.
+* don't use for holding Constants.
 
  
 ### Item 20 - Prefer class hierarchies to tagged classes
@@ -325,10 +325,10 @@ applicable to _nested classes_.
 * local
 All but first are called _inner classes_.
 
-* if you delcare a member class that does not require access to an enclosing instance, always put the static modifier in its declaration.
+* if you declare a member class that does not require access to an enclosing instance, always put the static modifier in its declaration.
 
 * Non static member class 
-Usage - implemenations of Map interface typically use nonstatic member classes to implement their collection views whic are retunred by Maps keySet, entrySet and values methods.
+Usage - implementations of Map interface typically use nonstatic member classes to implement their collection views which are returned by Maps keySet, entrySet and values methods.
 
 
 * Anonymous class - 

@@ -17,7 +17,7 @@ To understand Unbound or ?, look at following code.
 		l.add(object); //this will not compile
 
 * ?  really means - ? extends Object. 
-* When you do get() -> that's ok becuase you can cast it to Object.
+* When you do get() -> that's ok because you can cast it to Object.
 * When you do add() -> there is a problem because you are saying that you don't know what it is 
 and you need to LowerBound
 
@@ -46,7 +46,7 @@ and you need to LowerBound
 
 ####  RawTypes:
 Problem with using RawTypes is that at run time, while reading objects you might cast to a class type.
-Since it is not gauranteed what class types will be used, exception will happen.
+Since it is not guaranteed what class types will be used, exception will happen.
 
 Erasure: compiler make these changes after code compilation
 ```
